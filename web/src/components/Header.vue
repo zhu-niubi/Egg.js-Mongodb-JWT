@@ -17,6 +17,7 @@
         :key="item.name"
         :color="lightIndex === index ? '#00e676' : ''"
         flat
+        @click="go(item)"
       >
         <mu-icon size="16" :value="item.icon"></mu-icon>
         {{ item.name }}
@@ -152,6 +153,14 @@ export default {
   methods: {
     toggleWapMenu(openWapMenu) {
       this.openWapMenu = openWapMenu;
+    },
+    go(item) {
+      if (this.$route.name === item.router) {
+        return;
+      }
+      this.$router.push({
+        name: item.router,
+      });
     },
   },
 };

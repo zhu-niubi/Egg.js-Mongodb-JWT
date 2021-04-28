@@ -1,4 +1,4 @@
-# 第12节：前台首页&Header&Footer组件
+# 第12节：首页&Header&Footer组件
 
 ## 1.App.vue修改为如下
 

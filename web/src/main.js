@@ -16,6 +16,8 @@ import {
   List,
   Avatar,
   BottomSheet,
+  Pagination,
+  Paper,
 } from "muse-ui";
 import "muse-ui/lib/styles/theme.less";
 
@@ -27,6 +29,8 @@ Vue.use(Popover);
 Vue.use(List);
 Vue.use(Avatar);
 Vue.use(BottomSheet);
+Vue.use(Pagination);
+Vue.use(Paper);
 
 import { isPC } from "@/utils";
 Vue.prototype.isPC = isPC;
