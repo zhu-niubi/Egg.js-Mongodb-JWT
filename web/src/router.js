@@ -38,6 +38,24 @@ const routes = [
         /* webpackChunkName: "categories" */ "./views/Categories/Details.vue"
       ),
   },
+  {
+    path: "/tags",
+    name: "tags",
+    component: () =>
+      import(/* webpackChunkName: "tags" */ "./views/Tags/Index.vue"),
+  },
+  {
+    path: "/tags/details",
+    name: "tagsDetails",
+    component: () =>
+      import(/* webpackChunkName: "tags" */ "./views/Tags/Details.vue"),
+  },
+  {
+    path: "/about",
+    name: "about",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "./views/About/Index.vue"),
+  },
 ];
 
 const router = new VueRouter({

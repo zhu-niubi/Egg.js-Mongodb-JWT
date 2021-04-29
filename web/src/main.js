@@ -18,6 +18,9 @@ import {
   BottomSheet,
   Pagination,
   Paper,
+  Chip,
+  Carousel,
+  Card,
 } from "muse-ui";
 import "muse-ui/lib/styles/theme.less";
 
@@ -31,9 +34,23 @@ Vue.use(Avatar);
 Vue.use(BottomSheet);
 Vue.use(Pagination);
 Vue.use(Paper);
+Vue.use(Chip);
+Vue.use(Carousel);
+Vue.use(Card);
 
 import { isPC } from "@/utils";
 Vue.prototype.isPC = isPC;
+Vue.prototype.avatar =
+  "http://nevergiveupt.top/index.jpg";
+
+import VueLazyload from "vue-lazyload";
+
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: "http://www.nevergiveupt.top/loading.gif",
+  loading: "http://www.nevergiveupt.top/loading.gif",
+  attempt: 1,
+});
 
 new Vue({
   router,

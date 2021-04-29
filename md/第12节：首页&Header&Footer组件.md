@@ -1020,5 +1020,5 @@ export default {
 
 ```
 
-wap版的使用了muse-ui的BottomSheet组件，别忘记在main.js中按需导入。
+wap版的使用了muse-ui的[BottomSheet](https://muse-ui.org/#/zh-CN/bottom-sheet)组件，别忘记在main.js中按需导入。
 
