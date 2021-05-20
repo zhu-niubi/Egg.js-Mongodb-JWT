@@ -52,6 +52,11 @@ Vue.use(VueLazyload, {
   attempt: 1,
 });
 
+//过滤器
+import * as filters from "./filter";
+Object.keys(filters).forEach((k) => Vue.filter(k, filters[k])); //注册过滤器
+Vue.prototype.filterDate = filters.filterDate; //时间过滤方法
+
 new Vue({
   router,
   render: (h) => h(App),
