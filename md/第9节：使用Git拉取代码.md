@@ -41,11 +41,11 @@ $ ssh-keygen -t rsa -C "xxx@qq.com" # 然后回车即可
 
 （1：表示文件名，2：表示生成证书的密码，3：表示确认密码）
 
-![git_config.png](http://www.nevergiveupt.top/git/git_config.png)
+![git_config.png](/Users/xwl/Desktop/git_config.png)
 
 
 
-<img src="http://www.nevergiveupt.top/git/git_config_success.png" alt="git_config_success.png" style="zoom:50%;" />
+<img src="/Users/xwl/Desktop/git_config_success.png" alt="git_config_success.png" style="zoom:50%;" />
 
 
 
@@ -55,7 +55,7 @@ $ ssh-keygen -t rsa -C "xxx@qq.com" # 然后回车即可
 $ cd ~/.ssh/
 ```
 
-![git_ssh.png](http://www.nevergiveupt.top/git/git_ssh.png)
+![git_ssh.png](/Users/xwl/Desktop/git_ssh.png)
 
 > 这里的id_rsa 是私钥，id_rsa.pub表示公钥
 
@@ -67,15 +67,15 @@ $ cd ~/.ssh/
 1）首先登陆[Github](https://github.com/)，
 2）登陆之后点击头像，点击`Settings`.
 
-<img src="http://www.nevergiveupt.top/git/github_settings.png" alt="github_settings.png" style="zoom:50%;" />
+<img src="/Users/xwl/Desktop/github_settings.png" alt="github_settings.png" style="zoom:50%;" />
 
 3) 然后点击`SSH and GPG Keys`-----> `New SSH Key`
 
-![git_ssh_new_key.png](http://www.nevergiveupt.top/git/git_ssh_new_key.png)
+![git_ssh_new_key.png](/Users/xwl/Desktop/git_ssh_new_key.png)
 
 4) 然后填写SSH Key数据。Title是名字（随便写），Key是我们在上面创建的公钥，复制到里面即可。
 
-![](http://www.nevergiveupt.top/git/git_add_ssh_key.png)
+![](/Users/xwl/Desktop/git_add_ssh_key.png)
 
 5）回到服务器中，用命令`cd ~/.ssh/` 切换到证书文件下，然后用命令`cat id_rsa.pub` 查看公钥内容，并复制公钥内容，将该公钥黏贴到github中的key里面，然后点击`Add SSH Key`。
 
@@ -84,7 +84,7 @@ $ cd ~/.ssh/
 $ cat id_rsa.pub
 ```
 
-![git_rsa_pub.png](http://www.nevergiveupt.top/git/git_rsa_pub.png)
+![git_rsa_pub.png](/Users/xwl/Desktop/git_rsa_pub.png)
 
 8.验证git的配置是否正确，是否能链接github
 
@@ -94,7 +94,7 @@ $ cat id_rsa.pub
 $ ssh git@github.com
 ```
 
-![git_validate_success.png](http://www.nevergiveupt.top/git/git_validate_success.png)
+![git_validate_success.png](/Users/xwl/Desktop/git_validate_success.png)
 
 系统会提示是否要连接，我们输入`yes`，然后回车。当出现上图红方框中的内容时，就表示我们的服务器已经和github连接成功。
 

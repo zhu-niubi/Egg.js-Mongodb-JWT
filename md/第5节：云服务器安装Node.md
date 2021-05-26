@@ -1,6 +1,7 @@
 # 第5节：云服务器安装Node
 
 1.Node.js 需要通过 g++ 进行编译，所以先执行如下命令，这个过程大概几分钟的样子。
+
 ```bash
 $ yum -y install gcc gcc-c++ autoconf
 ```
@@ -15,7 +16,7 @@ $ cd /usr/local/src
 $ wget https://nodejs.org/dist/v12.18.3/node-v12.18.3.tar.gz
 ```
 查看Node.js所有版本：[传送门](https://nodejs.org/dist/)
-![node.png](http://www.nevergiveupt.top/node.png)
+![node.png](/Users/xwl/Desktop/node.png)
 
 4.下载完成后解压
 ```bash

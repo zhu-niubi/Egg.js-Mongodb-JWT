@@ -13,7 +13,7 @@ Nginx是一款使用C语言开发的高性能的http服务器/反向代理服务
 (3).反向代理，负载均衡。当网站的访问量达到一定程度后，单台服务器不能满足用户的请求时，需要用多台服务器集群可以使用nginx做反向代理。并且多台服务器可以平均分担负载，不会因为某台服务器负载高宕机而某台服务器闲置的情况。
 
 3.查看Nginx所有版本：http://nginx.org/download/
-![nginx.png](http://www.nevergiveupt.top/nginx.png)
+![nginx.png](/Users/xwl/Desktop/nginx.png)
 
 
 

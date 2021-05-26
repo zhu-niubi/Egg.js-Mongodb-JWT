@@ -12,9 +12,9 @@ $ wget https://fastdl.mongodb.org/osx/mongodb-linux-x86_64-4.0.11.tgz
 
 第一步：打开[Mongodb官网](https://www.mongodb.com/)
 第二步：
-![18.png](http://www.nevergiveupt.top/18.png)
+![18.png](/Users/xwl/Desktop/18.png)
 第三步：这里由于我当时选的版本是有的，后面人家更新就没有我当时选的版本了，这里就请选你自己对相应的环境与版本。当然你也可以复制选择我所选择的版本。
-![19.png](http://www.nevergiveupt.top/19.png)
+![19.png](/Users/xwl/Desktop/19.png)
 2.解压并重命名文件夹为 mongodb
 
 ```bash
@@ -48,7 +48,7 @@ $ cd /usr/local/mongodb/bin/
 $ ./mongo
 ```
 看到如下则表示启动成功：
-![20.png](http://www.nevergiveupt.top/20.png)
+![20.png](/Users/xwl/Desktop/20.png)
 mongodb 默认的端口号是 27017。
 
 7.如果你数据库的连接要账号和密码的，要创建数据库管理员，不然直接连接即可。 在 mongo shell 中创建管理员及数据库。
