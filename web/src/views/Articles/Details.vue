@@ -127,8 +127,10 @@ import Comment from "@/components/Comment";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
+import Clipboard from "clipboard";
 import { mavonEditor } from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
+import { markdown } from "@/utils/markdown";
 import $ from "jquery";
 
 export default {
@@ -149,8 +151,7 @@ export default {
       },
       prev: {},
       next: {},
-      content:
-        "在前端开发中， html 转 pdf 是最常见的需求，实现这块需求的开发[html2canvas](http://html2canvas.hertzen.com/)和 [jspdf](http://mozilla.github.io/pdf.js/getting_started/) 是最常用的两个插件，插件都是现成的。\n### 1.安装\n### 2.使用",
+      content: "",
       toc: [],
       commentSuccess: false,
       commentList: [],
@@ -158,6 +159,11 @@ export default {
   },
   computed: {},
   mounted() {
+    this.content = markdown(
+      mavonEditor,
+      "在前端开发中， html 转 pdf 是最常见的需求，实现这块需求的开发[html2canvas](http://html2canvas.hertzen.com/)和 [jspdf](http://mozilla.github.io/pdf.js/getting_started/) 是最常用的两个插件，插件都是现成的。\n### 1.安装\n### 2.使用 \n ```js \n console.log(123); \n```"
+    );
+
     this.$nextTick(() => {
       const aArr = $(
         ".v-note-wrapper .v-note-panel .v-note-navigation-wrapper .v-note-navigation-content a"
@@ -175,6 +181,20 @@ export default {
       });
       this.toc = toc;
     });
+
+
+    this.$nextTick(() => {
+      this.clipboard = new Clipboard(".copy-btn");
+      // 复制成功失败的提示
+      this.clipboard.on("success", () => {
+        this.$toast.success("复制成功");
+      });
+      this.clipboard.on("error", () => {
+        this.$toast.error("复制失败");
+      });
+    });
+
+
   },
   methods: {
     scrollToPosition(id) {
