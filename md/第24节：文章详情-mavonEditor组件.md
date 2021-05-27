@@ -144,7 +144,7 @@ scrollToPosition(id) {
 
 
 
-## 5.遗留一个问题：代码高亮处理
+## 5.代码高亮处理
 
 如不需要hightlight代码高亮显示，你应该设置`ishljs`为`false`
 
@@ -159,6 +159,175 @@ scrollToPosition(id) {
 **Notice**: [可选配色方案](https://github.com/hinesboy/mavonEditor/blob/master/src/lib/core/hljs/lang.hljs.css.js) 和 [支持的语言](https://github.com/hinesboy/mavonEditor/blob/master/src/lib/core/hljs/lang.hljs.js) 是从 [highlight.js/9.12.0](https://github.com/isagalaev/highlight.js/tree/master/src) 导出的
 
 [本地按需加载](https://github.com/hinesboy/mavonEditor/blob/master/doc/cn/no-cnd.md)
+
+
+
+我们这里要完成`代码高亮` `代码显示行号`  `代码复制`功能
+
++ 先安装要使用的插件
+
+```bash
+$ yarn add clipboard highlight.js
+```
+
++ utils新建markdown.js
+
+```js
+const hljs = require("highlight.js");
+
+export const markdown = (mavonEditor, content) => {
+  const md = mavonEditor.getMarkdownIt();
+  return md
+    .set({
+      highlight: function(str, lang) {
+        const codeIndex =
+          parseInt(Date.now()) + Math.floor(Math.random() * 10000000);
+        let html = `<button class="copy-btn" type="button" data-clipboard-action="copy" data-clipboard-target="#copy${codeIndex}">copy</button>`;
+
+        const linesLength = str.split(/\n/).length - 1;
+        let linesNum = '<span aria-hidden="true" class="line-numbers-rows">';
+        for (let index = 0; index < linesLength; index++) {
+          linesNum = linesNum + "<span></span>";
+        }
+        linesNum += "</span>";
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            const preCode = hljs.highlight(lang, str, true).value;
+            html = html + preCode;
+            if (linesLength) {
+              html += '<b class="name">' + lang + "</b>";
+            }
+            return `<pre class="hljs"><code>${html}</code>${linesNum}</pre><textarea style="position: absolute;top: -9999px;left: -9999px;z-index: -9999;" id="copy${codeIndex}">${str.replace(
+              /<\/textarea>/g,
+              "&lt;/textarea>"
+            )}</textarea>`;
+          } catch (error) {
+            console.log(error);
+          }
+        }
+
+        const preCode = md.utils.escapeHtml(str);
+        html = html + preCode;
+        return `<pre class="hljs"><code>${html}</code>${linesNum}</pre><textarea style="position: absolute;top: -9999px;left: -9999px;z-index: -9999;" id="copy${codeIndex}">${str.replace(
+          /<\/textarea>/g,
+          "&lt;/textarea>"
+        )}</textarea>`;
+      },
+    })
+    .render(content);
+};
+
+```
+
++ Global.less新增样式
+
+```less
+// 代码高亮
+pre.hljs {
+  padding: 40px 2px 12px 40px !important;
+  border-radius: 5px !important;
+  position: relative;
+  font-size: 14px !important;
+  line-height: 22px !important;
+  overflow: hidden !important;
+  code {
+    display: block !important;
+    margin: 0 10px !important;
+    overflow-x: auto !important;
+    &::-webkit-scrollbar {
+      z-index: 11;
+      width: 6px;
+    }
+    &::-webkit-scrollbar:horizontal {
+      height: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      width: 6px;
+      background: #666;
+    }
+    &::-webkit-scrollbar-corner,
+    &::-webkit-scrollbar-track {
+      background: #1e1e1e;
+    }
+    &::-webkit-scrollbar-track-piece {
+      background: #1e1e1e;
+      width: 6px;
+    }
+  }
+  // 行号样式
+  .line-numbers-rows {
+    position: absolute;
+    pointer-events: none;
+    top: 40px;
+    bottom: 12px;
+    left: 0;
+    font-size: 100%;
+    width: 40px;
+    text-align: center;
+    letter-spacing: -1px;
+    border-right: 1px solid rgba(0, 0, 0, 0.66);
+    user-select: none;
+    counter-reset: linenumber;
+    span {
+      pointer-events: none;
+      display: block;
+      counter-increment: linenumber;
+      &:before {
+        content: counter(linenumber);
+        color: #999;
+        display: block;
+        text-align: center;
+      }
+    }
+  }
+  b.name {
+    position: absolute;
+    top: 4px;
+    right: 60px;
+    z-index: 10;
+    color: #999;
+    pointer-events: none;
+  }
+  // 复制按钮样式
+  .copy-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    z-index: 10;
+    color: #333;
+    cursor: pointer;
+    border: 0;
+    border-radius: 2px;
+    outline: none;
+  }
+}
+.markdown-body pre.hljs {
+  background: #23241f;
+}
+
+pre.hljs::after {
+  height: 15px;
+  width: 100px;
+  margin-bottom: -7px;
+  border-radius: 5px 5px 0 0;
+  display: block;
+  content: "";
+  background: url(data:image/png;base64,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)
+    10px center no-repeat;
+  background-size: contain;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  box-sizing: border-box;
+  z-index: 1;
+}
+.markdown-body img {
+  width: 100%;
+}
+```
+
+
 
 
 
@@ -273,6 +442,13 @@ scrollToPosition(id) {
               </mu-button>
             </mu-tooltip>
           </div>
+
+          <mu-card id="comment" class="card">
+            <Comment
+              @comment="comment"
+              :comment-success="commentSuccess"
+            ></Comment>
+          </mu-card>
         </div>
       </div>
     </div>
@@ -282,17 +458,22 @@ scrollToPosition(id) {
 </template>
 <script>
 import RightConfig from "@/components/RightConfig";
+import Comment from "@/components/Comment";
+
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
+import Clipboard from "clipboard";
 import { mavonEditor } from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
+import { markdown } from "@/utils/markdown";
 import $ from "jquery";
 
 export default {
   name: "articlesDetails",
   components: {
     RightConfig,
+    Comment,
     Footer,
     Header,
     mavonEditor,
@@ -306,8 +487,7 @@ export default {
       },
       prev: {},
       next: {},
-      content:
-        "在前端开发中， html 转 pdf 是最常见的需求，实现这块需求的开发[html2canvas](http://html2canvas.hertzen.com/)和 [jspdf](http://mozilla.github.io/pdf.js/getting_started/) 是最常用的两个插件，插件都是现成的。\n### 1.安装\n### 2.使用",
+      content: "",
       toc: [],
       commentSuccess: false,
       commentList: [],
@@ -315,6 +495,11 @@ export default {
   },
   computed: {},
   mounted() {
+    this.content = markdown(
+      mavonEditor,
+      "在前端开发中， html 转 pdf 是最常见的需求，实现这块需求的开发[html2canvas](http://html2canvas.hertzen.com/)和 [jspdf](http://mozilla.github.io/pdf.js/getting_started/) 是最常用的两个插件，插件都是现成的。\n### 1.安装\n### 2.使用 \n ```js \n console.log(123); \n```"
+    );
+
     this.$nextTick(() => {
       const aArr = $(
         ".v-note-wrapper .v-note-panel .v-note-navigation-wrapper .v-note-navigation-content a"
@@ -332,12 +517,30 @@ export default {
       });
       this.toc = toc;
     });
+
+
+    this.$nextTick(() => {
+      this.clipboard = new Clipboard(".copy-btn");
+      // 复制成功失败的提示
+      this.clipboard.on("success", () => {
+        this.$toast.success("复制成功");
+      });
+      this.clipboard.on("error", () => {
+        this.$toast.error("复制失败");
+      });
+    });
+
+
   },
   methods: {
     scrollToPosition(id) {
       var position = $(id).offset();
       position.top = position.top - 80;
       $("html,body").animate({ scrollTop: position.top }, 1000);
+    },
+    async comment(data) {
+      console.log("评论数据", data);
+      this.commentSuccess = true;
     },
   },
 };
