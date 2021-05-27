@@ -2563,7 +2563,7 @@ commander@2.17.x:
   resolved "https://registry.nlark.com/commander/download/commander-2.17.1.tgz?cache=0&sync_timestamp=1618847161680&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcommander%2Fdownload%2Fcommander-2.17.1.tgz#bd77ab7de6de94205ceacc72f1716d29f20a77bf"
   integrity sha1-vXerfebelCBc6sxy8XFtKfIKd78=
 
-commander@^2.18.0, commander@^2.20.0:
+commander@^2.18.0, commander@^2.20.0, commander@^2.20.3:
   version "2.20.3"
   resolved "https://registry.nlark.com/commander/download/commander-2.20.3.tgz?cache=0&sync_timestamp=1618847161680&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcommander%2Fdownload%2Fcommander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha1-/UhehMA+tIgcIHIrpIA16FMa6zM=
@@ -2888,6 +2888,11 @@ cssesc@^3.0.0:
   version "3.0.0"
   resolved "https://registry.nlark.com/cssesc/download/cssesc-3.0.0.tgz#37741919903b868565e1c09ea747445cd18983ee"
   integrity sha1-N3QZGZA7hoVl4cCep0dEXNGJg+4=
+
+cssfilter@0.0.10:
+  version "0.0.10"
+  resolved "http://npm.choicesaas.cn/cssfilter/-/cssfilter-0.0.10.tgz#c6d2672632a2e5c83e013e6864a42ce8defd20ae"
+  integrity sha1-xtJnJjKi5cg+AT5oZKQs6N79IK4=
 
 cssnano-preset-default@^4.0.0, cssnano-preset-default@^4.0.8:
   version "4.0.8"
@@ -4256,10 +4261,20 @@ hex-color-regex@^1.1.0:
   resolved "https://registry.npm.taobao.org/hex-color-regex/download/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha1-TAb8y0YC/iYCs8k9+C1+fb8aio4=
 
+highlight.js-async-webpack@^1.0.4:
+  version "1.0.4"
+  resolved "http://npm.choicesaas.cn/highlight.js-async-webpack/-/highlight.js-async-webpack-1.0.4.tgz#c06b67bf99f049045d62b756e5855b0912ec616c"
+  integrity sha1-wGtnv5nwSQRdYrdW5YVbCRLsYWw=
+
 highlight.js@^10.7.1:
   version "10.7.2"
   resolved "https://registry.nlark.com/highlight.js/download/highlight.js-10.7.2.tgz?cache=0&sync_timestamp=1619160938319&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fhighlight.js%2Fdownload%2Fhighlight.js-10.7.2.tgz#89319b861edc66c48854ed1e6da21ea89f847360"
   integrity sha1-iTGbhh7cZsSIVO0ebaIeqJ+Ec2A=
+
+highlight.js@^9.11.0:
+  version "9.18.5"
+  resolved "http://npm.choicesaas.cn/highlight.js/-/highlight.js-9.18.5.tgz#d18a359867f378c138d6819edfc2a8acd5f29825"
+  integrity sha1-0Yo1mGfzeME41oGe38KorNXymCU=
 
 hmac-drbg@^1.0.1:
   version "1.0.1"
@@ -4962,6 +4977,11 @@ jest-worker@^25.4.0:
     merge-stream "^2.0.0"
     supports-color "^7.0.0"
 
+jquery@^3.6.0:
+  version "3.6.0"
+  resolved "http://npm.choicesaas.cn/jquery/-/jquery-3.6.0.tgz#c72a09f15c1bdce142f49dbf1170bdf8adac2470"
+  integrity sha1-xyoJ8Vwb3OFC9J2/EXC9+K2sJHA=
+
 js-message@1.0.7:
   version "1.0.7"
   resolved "https://registry.npm.taobao.org/js-message/download/js-message-1.0.7.tgz#fbddd053c7a47021871bb8b2c95397cc17c20e47"
@@ -5321,6 +5341,15 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+mavon-editor@^2.9.1:
+  version "2.9.1"
+  resolved "http://npm.choicesaas.cn/mavon-editor/-/mavon-editor-2.9.1.tgz#59adc7cbd1a1a71f691cf5b2a27e60ec3e6997cc"
+  integrity sha1-Wa3Hy9Ghpx9pHPWyon5g7D5pl8w=
+  dependencies:
+    highlight.js "^9.11.0"
+    highlight.js-async-webpack "^1.0.4"
+    xss "^1.0.6"
+
 md5.js@^1.3.4:
   version "1.3.5"
   resolved "https://registry.npm.taobao.org/md5.js/download/md5.js-1.3.5.tgz#b5d07b8e3216e3e27cd728d72f70d1e6a342005f"
@@ -5590,6 +5619,11 @@ multicast-dns@^6.0.1:
   dependencies:
     dns-packet "^1.3.1"
     thunky "^1.0.2"
+
+muse-ui-toast@^0.3.0:
+  version "0.3.0"
+  resolved "http://npm.choicesaas.cn/muse-ui-toast/-/muse-ui-toast-0.3.0.tgz#572bc6c250579c3d6f4dafc8535e631c401b8db0"
+  integrity sha1-VyvGwlBXnD1vTa/IU15jHEAbjbA=
 
 muse-ui@^3.0.2:
   version "3.0.2"
@@ -8542,6 +8576,14 @@ ws@^6.0.0, ws@^6.2.1:
   integrity sha1-RC/fCkftZPWbal2P8TD0dI7VJPs=
   dependencies:
     async-limiter "~1.0.0"
+
+xss@^1.0.6:
+  version "1.0.9"
+  resolved "http://npm.choicesaas.cn/xss/-/xss-1.0.9.tgz#3ffd565571ff60d2e40db7f3b80b4677bec770d2"
+  integrity sha1-P/1WVXH/YNLkDbfzuAtGd77HcNI=
+  dependencies:
+    commander "^2.20.3"
+    cssfilter "0.0.10"
 
 xtend@^4.0.0, xtend@~4.0.1:
   version "4.0.2"

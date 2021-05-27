@@ -1,192 +1,168 @@
-# 第 23节：文章详情页
+# 第 24节：文章详情-mavonEditor组件
 
-## 1.router.js 中配置文章详情页路由
+我们的文章内容是通过md语法来书写的。所有前台这边选用[mavonEditor](https://github.com/hinesboy/mavonEditor/blob/master/README.md)来解析。
+
+## 1.安装mavonEditor
+
+```bash
+$ npm install mavon-editor --save
+```
+
+## 2.引入
 
 ```js
-import Vue from "vue";
-import VueRouter from "vue-router";
-
-Vue.use(VueRouter);
-
-const routes = [
-  {
-    path: "/",
-    redirect: {
-      name: "index",
-    },
-  },
-  {
-    path: "/index",
-    name: "index",
-    component: () =>
-      import(/* webpackChunkName: "index" */ "./views/Home/Index.vue"),
-  },
-  {
-    path: "/archives",
-    name: "archives",
-    component: () =>
-      import(/* webpackChunkName: "archives" */ "./views/Archives/Index.vue"),
-  },
-  {
-    path: "/categories",
-    name: "categories",
-    component: () =>
-      import(
-        /* webpackChunkName: "categories" */ "./views/Categories/Index.vue"
-      ),
-  },
-  {
-    path: "/categories/details",
-    name: "categoriesDetails",
-    component: () =>
-      import(
-        /* webpackChunkName: "categories" */ "./views/Categories/Details.vue"
-      ),
-  },
-  {
-    path: "/tags",
-    name: "tags",
-    component: () =>
-      import(/* webpackChunkName: "tags" */ "./views/Tags/Index.vue"),
-  },
-  {
-    path: "/tags/details",
-    name: "tagsDetails",
-    component: () =>
-      import(/* webpackChunkName: "tags" */ "./views/Tags/Details.vue"),
-  },
-  {
-    path: "/about",
-    name: "about",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "./views/About/Index.vue"),
-  },
-  {
-    path: "/articles",
-    name: "articles",
-    component: () =>
-      import(/* webpackChunkName: "articles" */ "./views/Articles/Index.vue"),
-  },
-  {
-    path: "/articles/details",
-    name: "articlesDetails",
-    component: () =>
-      import(/* webpackChunkName: "articles" */ "./views/Articles/Details.vue"),
-  },
-];
-
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes,
-});
-
-export default router;
-
+import { mavonEditor } from "mavon-editor";
+import "mavon-editor/dist/css/index.css";
 ```
 
-## 2.Articles/Index.vue添加goDetail方法
+局部注册：
+
+```js
+export default {
+  name: "articlesDetails",
+  components: {
+  	// ...
+    mavonEditor,
+  },
+  // ...
+  data(){
+    return {
+            content:'在前端开发中， html 转 pdf 是最常见的需求，实现这块需求的开发[html2canvas](http://html2canvas.hertzen.com/)和 [jspdf](http://mozilla.github.io/pdf.js/getting_started/) 是最常用的两个插件，插件都是现成的。\n### 1.安装\n### 2.使用',
+      info: {},
+      prev: {},
+      next: {},
+      toc: [], // 目录
+      commentSuccess: false,
+      commentList: [],
+    }
+  }
+}
+```
+
+## 3.页面使用
 
 ```vue
-<template>
-  <div class="articles">
-    <Header :light-index="1"></Header>
-    <div class="content">
-      <div v-if="isPC" class="right">
-        <RightConfig showPosition="文章"></RightConfig>
-      </div>
-      <div :class="[{ 'wap-left': !isPC }, 'left']">
-        <mu-card class="card" @click="goDetail(1)">
-          <div v-if="isPC" class="cover">
-            <img
-              class="cover-img"
-              src="http://nevergiveupt.top/canvas/html2canvas.png"
-            />
-          </div>
-          <div class="card-box">
-            <div class="title">使用jspdf+canvas2html将网页保存为pdf文件</div>
-            <mu-card-actions class="sub-title">
-              <mu-button class="cursor-default" flat color="info"
-                >查看(10)</mu-button
-              >
-              <mu-button class="cursor-default" flat color="error"
-                >评论(0)</mu-button
-              >
-              <mu-button class="cursor-default" flat color="primary"
-                >点赞(20)</mu-button
-              >
-              <mu-button class="cursor-default" flat color="#9e9e9e"
-                >2021-02-04 09:57</mu-button
-              >
-            </mu-card-actions>
-            <mu-card-text class="text">简介</mu-card-text>
-            <mu-card-actions>
-              <mu-button flat class="chip cursor-default" color="primary">
-                <mu-icon left value="dns"></mu-icon>
-                分类
-              </mu-button>
-
-              <mu-button flat class="chip cursor-default">
-                <mu-icon left value="loyalty"></mu-icon>
-                标签1
-              </mu-button>
-              <mu-button flat class="chip cursor-default">
-                <mu-icon left value="loyalty"></mu-icon>
-                标签2
-              </mu-button>
-            </mu-card-actions>
-          </div>
-        </mu-card>
-      </div>
-    </div>
-
-    <div v-if="info.totalCount > pageSize" class="pagination">
-      <mu-pagination
-        raised
-        circle
-        :total="info.totalCount"
-        :current.sync="page"
-        :pageSize.sync="pageSize"
-        :pageCount="5"
-        @change="pageChange"
-      ></mu-pagination>
-    </div>
-
-    <Footer></Footer>
-  </div>
-</template>
-<script>
-import RightConfig from "@/components/RightConfig";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-
-export default {
-  name: "articles",
-  components: {
-    RightConfig,
-    Footer,
-    Header,
-  },
-
-  data() {
-    return {
-    };
-  },
-  mounted() {},
-  methods: {
-    goDetail(_id) {
-      this.$router.push({
-        name: "articlesDetails",
-        query: { id: _id },
-      });
-    },
-  },
-};
-</script>
-
+<mavonEditor
+   v-model="content"
+   :ishljs="true"
+   :toolbarsFlag="false"
+   :subfield="false"
+   defaultOpen="preview"
+   codeStyle="tomorrow-night-eighties"
+   :navigation="isPC"
+/>
 ```
 
-## 3.views 下新建 Articles/Details.vue
+[配置项文档](https://github.com/hinesboy/mavonEditor/blob/master/README.md)
+
+## 4.隐藏默认的目录导航并自定义
+
+global.less添加
+
+```less
+// 文章导航
+.v-note-wrapper .v-note-panel .v-note-navigation-wrapper.transition {
+  display: none;
+}
+.v-note-wrapper
+  .v-note-panel
+  .v-note-navigation-wrapper
+  .v-note-navigation-content
+  h3 {
+  padding-left: 20px !important;
+}
+
+@media screen and (max-width: 750px) {
+  .v-note-wrapper .v-note-panel .v-note-show .v-show-content {
+    width: 10rem !important;
+  }
+}
+```
+
+如何自定义？核科技-->`Jquery`
+
+安装jquery
+
+```bash
+$ yarn add jquery
+# OR
+$ npm install jquery
+```
+
+使用：
+
+```js
+import $ from "jquery";
+```
+
+```vue
+<mu-card v-if="toc.length > 0" class="card">
+        <div class="toc">
+          <div class="title">文章目录</div>
+           <!-- 遍历目录 -->
+          <div v-for="item in toc" :key="item.name">
+            <a @click="scrollToPosition(item.href)" v-html="item.name"></a>
+          </div>
+        </div>
+      </mu-card>
+```
+
+mounted函数里面构建自定义目录
+
+```js
+mounted() {
+  // 到接口请求哪一步，直接将这部分代码移动到接口请求成功之后即可。
+    this.$nextTick(() => {
+      const aArr = $(
+        ".v-note-wrapper .v-note-panel .v-note-navigation-wrapper .v-note-navigation-content a"
+      ).toArray();
+      let toc = [];
+      aArr.forEach((item) => {
+        let href = $(item).attr("id");
+        let name = $(item).parent().text();
+        if (href) {
+          toc.push({
+            href: "#" + href,
+            name,
+          });
+        }
+      });
+      this.toc = toc;
+    });
+  },
+```
+
+methods添加滚动函数
+
+```js
+scrollToPosition(id) {
+  var position = $(id).offset();
+  position.top = position.top - 80;
+  $("html,body").animate({ scrollTop: position.top }, 1000);
+},
+```
+
+
+
+## 5.遗留一个问题：代码高亮处理
+
+如不需要hightlight代码高亮显示，你应该设置`ishljs`为`false`
+
+为优化插件体积，从**v2.4.2**起以下文件将默认使用`cdnjs`外链:
+
+- `highlight.js`
+- `github-markdown-css`
+- `katex`(**v2.4.7**)
+
+代码高亮`highlight.js`中的语言解析文件和代码高亮样式将在使用时按需加载. `github-markdown-css`和`katex`仅会在`mounted`时加载
+
+**Notice**: [可选配色方案](https://github.com/hinesboy/mavonEditor/blob/master/src/lib/core/hljs/lang.hljs.css.js) 和 [支持的语言](https://github.com/hinesboy/mavonEditor/blob/master/src/lib/core/hljs/lang.hljs.js) 是从 [highlight.js/9.12.0](https://github.com/isagalaev/highlight.js/tree/master/src) 导出的
+
+[本地按需加载](https://github.com/hinesboy/mavonEditor/blob/master/doc/cn/no-cnd.md)
+
+
+
+完整代码：
 
 ```vue
 <template>
@@ -197,11 +173,8 @@ export default {
       <mu-card class="card">
         <div class="toc">
           <div class="title">文章目录</div>
-          <div>
-            <a>标题1</a>
-          </div>
-          <div>
-            <a>标题2</a>
+          <div v-for="item in toc" :key="item.name">
+            <a @click="scrollToPosition(item.href)" v-html="item.name"></a>
           </div>
         </div>
       </mu-card>
@@ -260,7 +233,15 @@ export default {
                 >2021-05-20 13:14</mu-button
               >
             </mu-card-actions>
-            <div>md内容</div>
+            <mavonEditor
+              v-model="content"
+              :ishljs="true"
+              :toolbarsFlag="false"
+              :subfield="false"
+              defaultOpen="preview"
+              codeStyle="tomorrow-night-eighties"
+              :navigation="isPC"
+            />
 
             <mu-card-actions>
               <mu-button class="cursor-default" flat color="primary">
@@ -304,12 +285,17 @@ import RightConfig from "@/components/RightConfig";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
+import { mavonEditor } from "mavon-editor";
+import "mavon-editor/dist/css/index.css";
+import $ from "jquery";
+
 export default {
   name: "articlesDetails",
   components: {
     RightConfig,
     Footer,
     Header,
+    mavonEditor,
   },
   data() {
     return {
@@ -320,15 +306,40 @@ export default {
       },
       prev: {},
       next: {},
-      content: "",
+      content:
+        "在前端开发中， html 转 pdf 是最常见的需求，实现这块需求的开发[html2canvas](http://html2canvas.hertzen.com/)和 [jspdf](http://mozilla.github.io/pdf.js/getting_started/) 是最常用的两个插件，插件都是现成的。\n### 1.安装\n### 2.使用",
       toc: [],
       commentSuccess: false,
       commentList: [],
     };
   },
   computed: {},
-  mounted() {},
-  methods: {},
+  mounted() {
+    this.$nextTick(() => {
+      const aArr = $(
+        ".v-note-wrapper .v-note-panel .v-note-navigation-wrapper .v-note-navigation-content a"
+      ).toArray();
+      let toc = [];
+      aArr.forEach((item) => {
+        let href = $(item).attr("id");
+        let name = $(item).parent().text();
+        if (href) {
+          toc.push({
+            href: "#" + href,
+            name,
+          });
+        }
+      });
+      this.toc = toc;
+    });
+  },
+  methods: {
+    scrollToPosition(id) {
+      var position = $(id).offset();
+      position.top = position.top - 80;
+      $("html,body").animate({ scrollTop: position.top }, 1000);
+    },
+  },
 };
 </script>
 <style lang="less" scoped>
@@ -438,6 +449,4 @@ export default {
 }
 </style>
 ```
-
-
 

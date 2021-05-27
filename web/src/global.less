@@ -1,3 +1,15 @@
+.clearfix {
+  zoom: 1;
+}
+.clearfix::after,
+.clearfix::before {
+  content: "";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  height: 0;
+}
+
 .common {
   width: 100%;
   height: 100%;
@@ -74,4 +86,22 @@
 
 img {
   max-width: 100%;
+}
+
+// 文章导航
+.v-note-wrapper .v-note-panel .v-note-navigation-wrapper.transition {
+  display: none;
+}
+.v-note-wrapper
+  .v-note-panel
+  .v-note-navigation-wrapper
+  .v-note-navigation-content
+  h3 {
+  padding-left: 20px !important;
+}
+
+@media screen and (max-width: 750px) {
+  .v-note-wrapper .v-note-panel .v-note-show .v-show-content {
+    width: 10rem !important;
+  }
 }

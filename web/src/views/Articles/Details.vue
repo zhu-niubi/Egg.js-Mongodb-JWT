@@ -6,11 +6,8 @@
       <mu-card class="card">
         <div class="toc">
           <div class="title">文章目录</div>
-          <div>
-            <a>标题1</a>
-          </div>
-          <div>
-            <a>标题2</a>
+          <div v-for="item in toc" :key="item.name">
+            <a @click="scrollToPosition(item.href)" v-html="item.name"></a>
           </div>
         </div>
       </mu-card>
@@ -69,9 +66,7 @@
                 >2021-05-20 13:14</mu-button
               >
             </mu-card-actions>
-            <div>md内容</div>
-
-            <!-- <mavonEditor
+            <mavonEditor
               v-model="content"
               :ishljs="true"
               :toolbarsFlag="false"
@@ -79,7 +74,7 @@
               defaultOpen="preview"
               codeStyle="tomorrow-night-eighties"
               :navigation="isPC"
-            /> -->
+            />
 
             <mu-card-actions>
               <mu-button class="cursor-default" flat color="primary">
@@ -111,6 +106,13 @@
               </mu-button>
             </mu-tooltip>
           </div>
+
+          <mu-card id="comment" class="card">
+            <Comment
+              @comment="comment"
+              :comment-success="commentSuccess"
+            ></Comment>
+          </mu-card>
         </div>
       </div>
     </div>
@@ -120,34 +122,71 @@
 </template>
 <script>
 import RightConfig from "@/components/RightConfig";
+import Comment from "@/components/Comment";
+
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+
+import { mavonEditor } from "mavon-editor";
+import "mavon-editor/dist/css/index.css";
+import $ from "jquery";
 
 export default {
   name: "articlesDetails",
   components: {
     RightConfig,
+    Comment,
     Footer,
     Header,
+    mavonEditor,
   },
   data() {
     return {
       info: {
-        title:'使用jspdf+canvas2html将网页保存为pdf文件',
-        introduction:'简介',
-        cover:'http://nevergiveupt.top/canvas/html2canvas.png'
+        title: "使用jspdf+canvas2html将网页保存为pdf文件",
+        introduction: "简介",
+        cover: "http://nevergiveupt.top/canvas/html2canvas.png",
       },
       prev: {},
       next: {},
-      content: "",
+      content:
+        "在前端开发中， html 转 pdf 是最常见的需求，实现这块需求的开发[html2canvas](http://html2canvas.hertzen.com/)和 [jspdf](http://mozilla.github.io/pdf.js/getting_started/) 是最常用的两个插件，插件都是现成的。\n### 1.安装\n### 2.使用",
       toc: [],
       commentSuccess: false,
       commentList: [],
     };
   },
   computed: {},
-  mounted() {},
-  methods: {},
+  mounted() {
+    this.$nextTick(() => {
+      const aArr = $(
+        ".v-note-wrapper .v-note-panel .v-note-navigation-wrapper .v-note-navigation-content a"
+      ).toArray();
+      let toc = [];
+      aArr.forEach((item) => {
+        let href = $(item).attr("id");
+        let name = $(item).parent().text();
+        if (href) {
+          toc.push({
+            href: "#" + href,
+            name,
+          });
+        }
+      });
+      this.toc = toc;
+    });
+  },
+  methods: {
+    scrollToPosition(id) {
+      var position = $(id).offset();
+      position.top = position.top - 80;
+      $("html,body").animate({ scrollTop: position.top }, 1000);
+    },
+    async comment(data) {
+      console.log("评论数据", data);
+      this.commentSuccess = true;
+    },
+  },
 };
 </script>
 <style lang="less" scoped>
