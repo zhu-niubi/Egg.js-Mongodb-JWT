@@ -1,3 +1,117 @@
+
+
+# 第27节：文章详情-PrevNext组件
+
+## 1.新建components/PrevNext.vue
+
+```vue
+<template>
+  <div class="prev-next">
+    <mu-button v-if="prev" flat color="primary" @click="goDetails(prev)">上一篇： {{prev.title}}</mu-button>
+    <mu-button v-if="next" flat color="info" @click="goDetails(next)">下一篇： {{next.title}}</mu-button>
+  </div>
+</template>
+<script>
+export default {
+  props: {
+    prev: {
+      type: Object
+    },
+    next: {
+      type: Object
+    }
+  },
+  methods: {
+    goDetails(item) {
+      this.$router.push({
+        name: "articlesDetails",
+        query: { id: item._id }
+      });
+      location.reload();
+      document.body.scrollIntoView();
+    }
+  }
+};
+</script>
+<style lang="less" scoped>
+.prev-next {
+  font-size: 0.24rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+</style>
+```
+
+
+
+## 2.Articles/Details.vue使用
+
+```js
+import PrevNext from "@/components/PrevNext";
+```
+
+局部注册
+
+```js
+export default {
+  name: "articlesDetails",
+  components: {
+  	// ...
+    PrevNext,
+  },
+  // ...
+  data(){
+    return {
+			// ...
+       info: {
+        _id: "601134b4c4ae0128013d322d",
+        title: "使用jspdf+canvas2html将网页保存为pdf文件",
+        introduction: "简介",
+        cover: "http://nevergiveupt.top/canvas/html2canvas.png",
+      },
+      prev: {},
+      next: {},
+      // ...
+    }
+  }
+}
+```
+
+
+
+## 3.页面使用
+
+```vue
+ <mu-card id="comment" class="card">
+            <Comment
+              @comment="comment"
+              :comment-success="commentSuccess"
+            ></Comment>
+          </mu-card>
+
+          <mu-card class="card" v-if="commentList.length > 0">
+            <mu-card-title title="评论（3）"></mu-card-title>
+            <mu-divider></mu-divider>
+            <CommentList
+              v-if="commentList.length > 0"
+              :articleId="info._id"
+              :articleTitle="info.title"
+              :list="commentList"
+            ></CommentList>
+          </mu-card>
+
+          <prev-next :prev="prev" :next="next"></prev-next>
+
+```
+
+
+
+完整代码：
+
+Articles/Details.vue
+
+```vue
 <template>
   <div class="details">
     <Header :light-index="1"></Header>
@@ -434,3 +548,5 @@ export default {
   }
 }
 </style>
+```
+

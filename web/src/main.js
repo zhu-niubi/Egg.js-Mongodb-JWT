@@ -24,7 +24,9 @@ import {
   Tooltip,
   TextField,
   Dialog,
-  Snackbar
+  Snackbar,
+  Badge,
+  Divider
 } from "muse-ui";
 import "muse-ui/lib/styles/theme.less";
 import Toast from "muse-ui-toast";
@@ -56,6 +58,10 @@ Vue.use(Tooltip);
 Vue.use(TextField);
 Vue.use(Dialog);
 Vue.use(Snackbar);
+Vue.use(Badge);
+Vue.use(Divider);
+
+
 
 import { isPC } from "@/utils";
 Vue.prototype.isPC = isPC;

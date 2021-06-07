@@ -1,3 +1,324 @@
+# 第 26节：文章详情-CommentList组件
+
+![./comment.png](./comment.png)
+
+
+
+
+
+
+
+## 1.新建components/CommentList.vue
+
+```vue
+<template>
+  <div class="comment-list">
+    <div class="comment-item">
+      <mu-card
+        class="card"
+        :class="[classStyle, isPC ? '' : 'wap-card']"
+        v-for="item in list"
+        :key="item._id"
+      >
+        <mu-card-header
+          :title="item.nickName"
+          :sub-title="item.commentTime | filterDate"
+        >
+          <mu-avatar slot="avatar">
+            <img :src="item.avatar" />
+          </mu-avatar>
+        </mu-card-header>
+        <mu-card-text>
+          <span v-if="prevWho" class="who">@{{ prevWho }}</span>
+          {{ item.currentReplayContent }}
+          <mu-badge
+            v-if="item.auditStatus == 3"
+            content="未审核"
+            color="#ccc"
+          ></mu-badge>
+        </mu-card-text>
+
+        <mu-card-actions
+          v-if="
+            user && user.nickName !== item.nickName && user.email !== item.email
+          "
+        >
+          <mu-button @click="replay(item)" small color="primary"
+            >回复</mu-button
+          >
+        </mu-card-actions>
+
+        <!-- 递归组件 调用自身，必须指定name属性commentList -->
+        <div v-if="item.children">
+          <comment-list
+            :prevWho="item.nickName"
+            classStyle="sub-card"
+            :articleId="articleId"
+            :articleTitle="articleTitle"
+            :list="item.children"
+          ></comment-list>
+        </div>
+      </mu-card>
+    </div>
+
+    <mu-dialog
+      :title="modalTitle"
+      width="600"
+      max-width="80%"
+      :esc-press-close="false"
+      :overlay-close="false"
+      :open.sync="open"
+    >
+      <mu-text-field
+        v-model="replayContent"
+        class="comment-input"
+        placeholder="说点什么..."
+        multi-line
+        :rows="4"
+        full-width
+      ></mu-text-field>
+      <mu-button slot="actions" flat color="primary" @click="close"
+        >取消</mu-button
+      >
+      <mu-button slot="actions" flat color="primary" @click="ok"
+        >确定</mu-button
+      >
+    </mu-dialog>
+  </div>
+</template>
+<script>
+export default {
+  name: "commentList",
+  props: {
+    list: {
+      type: Array,
+      default: () => {},
+    },
+    articleId: {
+      type: String,
+      default: "",
+    },
+    articleTitle: {
+      type: String,
+      default: "",
+    },
+    classStyle: {
+      type: String,
+      default: "",
+    },
+    prevWho: {
+      type: String,
+      default: "",
+    },
+  },
+  data() {
+    return {
+      open: false,
+      replayContent: "",
+      modalTitle: "",
+      user: JSON.parse(localStorage.getItem("user")),
+      showList: [],
+      replayItem: {},
+    };
+  },
+  methods: {
+    replay(item) {
+      if (!this.user) {
+        this.$toast.info("登录才能回复");
+        return;
+      }
+      this.open = true;
+      this.modalTitle = `回复 @${item.nickName}`;
+      this.replayItem = item;
+    },
+    close() {
+      this.open = false;
+      this.replayContent = "";
+    },
+    ok() {
+      if (!this.replayContent) {
+        this.$toast.info("请输入回复内容");
+        return;
+      }
+    },
+  },
+};
+</script>
+<style lang="less" scoped>
+.comment-item {
+  padding-bottom: 0.53333rem;
+  /deep/ .mu-card-text {
+    padding-top: 0;
+    .who {
+      color: #e91e63;
+    }
+  }
+}
+.card {
+  margin: 0.42667rem 1.06667rem 0 1.06667rem;
+  padding-bottom: 0.42667rem;
+  box-shadow: none;
+  border-radius: 0;
+}
+.wap-card {
+  margin: 4px 10px 0 10px;
+}
+.sub-card {
+  border-left: 1px dashed #00e676;
+  border-bottom: 1px dashed #00e676;
+  box-shadow: none;
+  border-radius: 0;
+}
+</style>
+```
+
+
+
+## 2.Articles/Details.vue使用
+
+```js
+import CommentList from "@/components/CommentList";
+```
+
+局部注册
+
+```js
+export default {
+  name: "articlesDetails",
+  components: {
+  	// ...
+    CommentList,
+  },
+  // ...
+  data(){
+    return {
+			// ...
+       info: {
+        _id: "601134b4c4ae0128013d322d",
+        title: "使用jspdf+canvas2html将网页保存为pdf文件",
+        introduction: "简介",
+        cover: "http://nevergiveupt.top/canvas/html2canvas.png",
+      },
+      prev: {},
+      next: {},
+      content: "",
+      toc: [],
+      commentSuccess: false,
+      commentList: [
+        {
+          targetReplayId: "6084ce48e268db458626591a",
+          targetReplayContent: "good",
+          currentReplayContent: "这篇文章写得不错",
+          commentTime: 1623048202,
+          auditTime: 0,
+          auditStatus: "3",
+          _id: "60bdc00ac4b76ef12cd151aa",
+          avatar: "http://www.nevergiveupt.top/user_avatar.png",
+          email: "13412345678@163.com",
+          nickName: "Never",
+          articleId: "601134b4c4ae0128013d322d",
+          articleTitle: "测试评论文章",
+        },
+        {
+          targetReplayId: "",
+          targetReplayContent: "",
+          currentReplayContent: "good",
+          commentTime: 1619316296,
+          auditTime: 1619316309,
+          auditStatus: "1",
+          _id: "6084ce48e268db458626591a",
+          avatar:
+            "http://img.nevergiveupt.top/78e79747e0658b0d1766c8928d784653.png",
+          email: "1916579055@qq.com",
+          nickName: "永不放弃",
+          articleId: "601134b4c4ae0128013d322d",
+          articleTitle: "测试评论文章",
+        },
+        {
+          targetReplayId: "",
+          targetReplayContent: "",
+          currentReplayContent: "好，不错",
+          commentTime: 1611745373,
+          auditTime: 1612108800,
+          auditStatus: "1",
+          _id: "6011485dc4ae0128013d3246",
+          avatar:
+            "http://img.nevergiveupt.top/78e79747e0658b0d1766c8928d784653.png",
+          email: "1916579055@qq.com",
+          nickName: "永不放弃",
+          articleId: "601134b4c4ae0128013d322d",
+          articleTitle: "测试评论文章",
+        },
+      ],
+      // ...
+    }
+  }
+}
+```
+
+
+
+## 3.页面使用
+
+```vue
+ <mu-card id="comment" class="card">
+            <Comment
+              @comment="comment"
+              :comment-success="commentSuccess"
+            ></Comment>
+          </mu-card>
+
+          <mu-card class="card" v-if="commentList.length > 0">
+            <mu-card-title title="评论（3）"></mu-card-title>
+            <mu-divider></mu-divider>
+            <CommentList
+              v-if="commentList.length > 0"
+              :articleId="info._id"
+              :articleTitle="info.title"
+              :list="commentList"
+            ></CommentList>
+          </mu-card>
+```
+
+
+
+mounted调用
+
+```js
+this.commentList = this.listToTree(this.commentList);
+```
+
+methods定义`listToTree`方法
+
+```js
+listToTree(list) {
+  let info = list.reduce(
+    (map, node) => ((map[node._id] = node), (node.children = []), map),
+    {}
+  );
+  return list.filter((node) => {
+    info[node.targetReplayId] &&
+      info[node.targetReplayId].children.push(node);
+    return !node.targetReplayId;
+  });
+},
+```
+
+![](./commentList.png)
+
+listToTree方法就是将上面的列表结构转换成树形结构
+
+![commentListTree.png](./commentListTree.png)
+
+
+
+
+
+完整代码：
+
+Articles/Details.vue
+
+```vue
 <template>
   <div class="details">
     <Header :light-index="1"></Header>
@@ -125,7 +446,7 @@
             ></CommentList>
           </mu-card>
 
-          <prev-next :prev="prev" :next="next"></prev-next>
+          
         </div>
       </div>
     </div>
@@ -137,7 +458,6 @@
 import RightConfig from "@/components/RightConfig";
 import Comment from "@/components/Comment";
 import CommentList from "@/components/CommentList";
-import PrevNext from "@/components/PrevNext";
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -157,7 +477,6 @@ export default {
     Header,
     mavonEditor,
     CommentList,
-    PrevNext,
   },
   data() {
     return {
@@ -167,55 +486,8 @@ export default {
         introduction: "简介",
         cover: "http://nevergiveupt.top/canvas/html2canvas.png",
       },
-
-      prev: {
-        categories: "技术",
-        collect: 0,
-        comment: 0,
-        content:
-          "### 1.toRefs↵把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref↵↵`应用`: ",
-        cover: "http://nevergiveupt.top/vue/vue_composition_api.jpeg",
-        createTime: 1611739740,
-        introduction:
-          "toRefs把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref ，和响应式对象 property 一一对应。",
-        isCollect: true,
-        isComment: true,
-        isLike: true,
-        isReward: false,
-        like: 0,
-        publishStatus: 1,
-        sort: 0,
-        status: 1,
-        tags: ["Vue"],
-        title: "Vue3.x-toRefs & shallowReactive & shallowRef & shallowReadonly",
-        updateTime: 1611739813,
-        views: 5,
-        _id: "6011325cc4ae0128013d3210",
-      },
-      next: {
-        categories: "技术",
-        collect: 0,
-        comment: 0,
-        content:
-          "### 1.注册GitHub账号并创建一个OAuth Apps↵↵​登录GitHub账号然后右上角找到你的头像点击",
-        cover: "http://nevergiveupt.top/egg/github_signin.png",
-        createTime: 1612341189,
-        introduction:
-          "『登录鉴权』 是一个常见的业务场景，包括『账号密码登录方式』和『第三方统一登录』。其中，后者我们经常使用到，如 Google， GitHub，QQ 统一登录，它们都是基于 OAuth 规范。",
-        isCollect: true,
-        isComment: true,
-        isLike: true,
-        isReward: true,
-        like: 1,
-        publishStatus: 1,
-        sort: 0,
-        status: 1,
-        tags: ["Node.js", "Egg"],
-        title: "使用Egg通过GitHub来实现用户登录",
-        updateTime: 1612341807,
-        views: 6,
-        _id: "601a5fc5e268db458626523d",
-      },
+      prev: {},
+      next: {},
       content: "",
       toc: [],
       commentSuccess: false,
@@ -228,6 +500,8 @@ export default {
           auditTime: 0,
           auditStatus: "3",
           _id: "60bdc00ac4b76ef12cd151aa",
+          avatar: "http://www.nevergiveupt.top/user_avatar.png",
+          email: "13412345678@163.com",
           nickName: "Never",
           articleId: "601134b4c4ae0128013d322d",
           articleTitle: "测试评论文章",
@@ -302,7 +576,6 @@ export default {
     });
 
     this.commentList = this.listToTree(this.commentList);
-    console.log(this.commentList);
   },
   methods: {
     scrollToPosition(id) {
@@ -434,3 +707,5 @@ export default {
   }
 }
 </style>
+```
+

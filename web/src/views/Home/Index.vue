@@ -14,6 +14,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import IndexAnimation from "@/components/IndexAnimation";
+// var CryptoJS = require("crypto-js");
+const crypto = require("crypto");
 
 let i = 0;
 let timer = null;
@@ -34,6 +36,14 @@ export default {
   },
   mounted() {
     this.typing();
+    let key = "UhEUgAAARIA";
+    let word =
+      "4qHK04/3b223cf5a19c39a06baf2f17359bbe60/360p_0068/output_sd.m3u81622987620";
+    const hmac = crypto.createHash("md5", key);
+    const a = hmac.update(word).digest();
+    const l = a.toString('base64');
+    return l.replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_")
+
   },
   methods: {
     typing() {
