@@ -57,11 +57,21 @@
       </mu-button>
       <mu-popover :open.sync="openTheme" :trigger="triggerTheme">
         <mu-list>
-          <mu-list-item button>
-            <mu-list-item-title>Light</mu-list-item-title>
+          <mu-list-item button @click="toggleTheme('selfLight')">
+            <mu-list-item-title class="theme-title">
+              <mu-icon
+                :color="me === 'selfLight' ? 'primary' : ''"
+                value="brightness_7"
+              ></mu-icon>
+            </mu-list-item-title>
           </mu-list-item>
-          <mu-list-item button>
-            <mu-list-item-title>Dark</mu-list-item-title>
+          <mu-list-item button @click="toggleTheme('selfDark')">
+            <mu-list-item-title class="theme-title">
+              <mu-icon
+                :color="me === 'selfDark' ? 'primary' : ''"
+                value="brightness_4"
+              ></mu-icon>
+            </mu-list-item-title>
           </mu-list-item>
         </mu-list>
       </mu-popover>
@@ -84,10 +94,92 @@
         </mu-list>
       </mu-popover>
     </mu-appbar>
+
+    <!-- 搜索按钮 -->
+    <div class="tool" v-if="isShowAction">
+      <div v-if="info.login && !user" class="tool-row">
+        <mu-slide-left-transition>
+          <mu-button
+            v-show="showToolBtn"
+            @click="
+              openLoginModal = true;
+              showToolBtn = false;
+            "
+            fab
+            color="primary"
+            >登录</mu-button
+          >
+        </mu-slide-left-transition>
+      </div>
+      <div class="tool-row">
+        <mu-tooltip placement="right-start" content="登录/注册/搜索">
+          <mu-button
+            @click="showToolBtn = !showToolBtn"
+            fab
+            color="info"
+            class="search-fab"
+          >
+            <mu-icon value="adb"></mu-icon>
+          </mu-button>
+        </mu-tooltip>
+
+        <mu-slide-left-transition>
+          <mu-button
+            v-show="showToolBtn && info.openSearch"
+            @click="handleSearch"
+            fab
+            color="error"
+            >搜索</mu-button
+          >
+        </mu-slide-left-transition>
+      </div>
+      <div v-if="info.register && !user" class="tool-row">
+        <mu-slide-left-transition>
+          <mu-button
+            v-show="showToolBtn"
+            @click="
+              openRegisterModal = true;
+              showToolBtn = false;
+            "
+            fab
+            color="warning"
+            >注册</mu-button
+          >
+        </mu-slide-left-transition>
+      </div>
+    </div>
+
+    <RegisterForm
+      :open="openRegisterModal"
+      @toggle="toggleRegisterModal"
+    ></RegisterForm>
+    <LoginForm :open="openLoginModal" @toggle="toggleLoginModal"></LoginForm>
+    <SearchForm
+      :open="openSearchModal"
+      @toggle="toggleSearchModal"
+    ></SearchForm>
+
+    <mu-slide-bottom-transition>
+      <mu-tooltip placement="top" content="Top">
+        <mu-button
+          class="back-top"
+          v-show="showBackTop"
+          @click="scrollTop"
+          fab
+          color="secondary"
+        >
+          <mu-icon value="arrow_upward"></mu-icon>
+        </mu-button>
+      </mu-tooltip>
+    </mu-slide-bottom-transition>
   </div>
 </template>
 
 <script>
+import RegisterForm from "@/components/RegisterForm";
+import LoginForm from "@/components/LoginForm";
+import SearchForm from "@/components/SearchForm";
+
 const menus = [
   {
     name: "首页",
@@ -123,6 +215,11 @@ const menus = [
 
 export default {
   name: "Header",
+  components: {
+    RegisterForm,
+    LoginForm,
+    SearchForm,
+  },
   props: {
     lightIndex: {
       type: Number,
@@ -130,6 +227,15 @@ export default {
     },
     background: {
       type: String,
+    },
+  },
+  computed: {
+    isShowAction() {
+      return !(
+        !this.info.openSearch &&
+        !this.info.register &&
+        !this.info.login
+      );
     },
   },
   data() {
@@ -143,12 +249,41 @@ export default {
 
       info: {
         menu: menus,
+        login: true,
+        openSearch: true,
+        register: true,
       },
+
+      showToolBtn: false,
+      user: JSON.parse(localStorage.getItem("user")),
+
+      openSearchModal: false,
+      openLoginModal: false,
+      openRegisterModal: false,
+      showBackTop: false,
+      me: "",
     };
   },
   mounted() {
+    const hours = new Date().getHours();
+    let defaultTheme = "";
+    if (hours >= 8 && hours <= 18) {
+      defaultTheme = "selfLight";
+    } else {
+      defaultTheme = "selfDark";
+    }
+    this.me = localStorage.getItem("theme") || defaultTheme;
+
     this.trigger = this.$refs.button.$el;
     this.triggerTheme = this.$refs.theme.$el;
+
+    window.onscroll = () => {
+      if (document.documentElement.scrollTop + document.body.scrollTop > 100) {
+        this.showBackTop = true;
+      } else {
+        this.showBackTop = false;
+      }
+    };
   },
   methods: {
     toggleWapMenu(openWapMenu) {
@@ -161,6 +296,29 @@ export default {
       this.$router.push({
         name: item.router,
       });
+    },
+    handleSearch() {
+      this.openSearchModal = true;
+      this.showToolBtn = false;
+    },
+
+    toggleRegisterModal(bool) {
+      this.openRegisterModal = bool;
+    },
+    toggleLoginModal(bool) {
+      this.openLoginModal = bool;
+    },
+    toggleSearchModal(bool) {
+      this.openSearchModal = bool;
+    },
+    scrollTop() {
+      document.body.scrollIntoView({ block: "start", behavior: "smooth" });
+    },
+    toggleTheme(me) {
+      this.theme.use(me);
+      this.me = me;
+      localStorage.setItem("theme", me);
+      this.openTheme = false;
     },
   },
 };
@@ -201,5 +359,26 @@ export default {
     white-space: nowrap;
     text-align: right;
   }
+}
+
+.tool {
+  position: fixed;
+  left: 0;
+  bottom: 2.66667rem;
+  .tool-row {
+    margin-top: 20px;
+    height: 56px;
+    .search-fab {
+      margin-left: -28px;
+      margin-right: 20px;
+    }
+  }
+}
+
+.back-top {
+  position: fixed;
+  right: 0.26667rem;
+  bottom: 0.4rem;
+  background: #595959;
 }
 </style>

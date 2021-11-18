@@ -25,7 +25,7 @@
         </mu-tooltip>
 
         <mu-tooltip placement="top" content="评论">
-          <mu-button fab color="red">
+          <mu-button @click="scrollToPosition('#comment')"  fab color="red">
             <mu-icon value="chat"></mu-icon>
           </mu-button>
         </mu-tooltip>
@@ -276,6 +276,7 @@ export default {
       const aArr = $(
         ".v-note-wrapper .v-note-panel .v-note-navigation-wrapper .v-note-navigation-content a"
       ).toArray();
+      console.log(aArr)
       let toc = [];
       aArr.forEach((item) => {
         let href = $(item).attr("id");

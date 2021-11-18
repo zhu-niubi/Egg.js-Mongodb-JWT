@@ -1,4 +1,4 @@
-# 第 26节：文章详情-CommentList组件
+# 第26节：文章详情-CommentList组件
 
 ![./comment.png](./comment.png)
 
@@ -565,12 +565,12 @@ export default {
     });
 
     this.$nextTick(() => {
-      this.clipboard = new Clipboard(".copy-btn");
+      let clipboard = new Clipboard(".copy-btn");
       // 复制成功失败的提示
-      this.clipboard.on("success", () => {
+      clipboard.on("success", () => {
         this.$toast.success("复制成功");
       });
-      this.clipboard.on("error", () => {
+      clipboard.on("error", () => {
         this.$toast.error("复制失败");
       });
     });

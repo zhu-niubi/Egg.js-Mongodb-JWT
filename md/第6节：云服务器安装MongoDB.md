@@ -21,7 +21,30 @@ $ wget https://fastdl.mongodb.org/osx/mongodb-linux-x86_64-4.0.11.tgz
 $ tar zxvf mongodb-linux-x86_64-4.0.11.tgz
 $ mv mongodb-linux-x86_64-4.0.11 mongodb
 ```
+
+
+3.配置环境变量
+
+1、在终端中输出 "open -e .bash_profile"，打开bash_profile文件。
+
+2、将`/usr/local/mongodb/bin:$PATH`追加到之前的配置后面
+
+```bash
+PATH=/usr/local/git/bin:$PATH:/usr/local/mongodb/bin:$PATH
+
+export PATH
+```
+
+3、执行`source .bash_profile`使其刚刚的修改生效
+
+4、执行`mongod -version`查看是否配置好，有信息输出则成功。
+
+
+
+
+
 3.到var文件夹下去创建mongodb和/mongodb/data以及mongodb/logs。data 用于存放数据，logs 用于存放日志。
+
 ```bash
 $ cd /var
 $ mkdir mongodb   # 此时会在var文件夹下创建一个mongodb的文件夹
@@ -67,5 +90,4 @@ db.createUser({ user: "用户名", pwd:"密码", roles:[ { role: "readWrite", db
 ```
 > 温馨提示：重复按两下 ctrl+c ，退出 mongo shell。
 > 到这里 mongodb 基本已经安装设置完成了。
-
 

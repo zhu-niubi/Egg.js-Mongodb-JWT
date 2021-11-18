@@ -1,10 +1,10 @@
-# 第 25节：文章详情-Comment组件
+# 第25节：文章详情-Comment组件
 
 ## 1.新建components/Comment.vue
 
 ```bash
 <template>
-  <div class="comemnt clearfix">
+  <div class="clearfix">
     <mu-card-title></mu-card-title>
     <mu-text-field
       class="comment-input"
@@ -157,56 +157,49 @@ methods: {
 }
 ```
 
-## 5.安装muse-ui-toast
 
-```bash
-$ npm install muse-ui-toast -S
-# or
-$ yarn add muse-ui-toast
+
+## 5.滚动到评论位置
+
+```vue
+<div v-if="isPC" class="toc-fixed">
+  <mu-card class="card">
+    <div class="toc">
+      <div class="title">文章目录</div>
+      <div v-for="item in toc" :key="item.name">
+        <a @click="scrollToPosition(item.href)" v-html="item.name"></a>
+      </div>
+    </div>
+  </mu-card>
+  <div class="action" :class="toc.length > 0 ? '' : 'noMulu'">
+    <mu-tooltip placement="top" content="点赞">
+      <mu-button fab color="primary">
+        <mu-icon value="thumb_up"></mu-icon>
+      </mu-button>
+    </mu-tooltip>
+
+    <mu-tooltip placement="top" content="收藏">
+      <mu-button fab color="purple500">
+        <mu-icon value="grade"></mu-icon>
+      </mu-button>
+    </mu-tooltip>
+
+    <mu-tooltip placement="top" content="评论">
+      <mu-button @click="scrollToPosition('#comment')"  fab color="red">
+        <mu-icon value="chat"></mu-icon>
+      </mu-button>
+    </mu-tooltip>
+  </div>
+</div>
 ```
 
-main.js使用
+scrollToPosition方法我们上节课也定义过了
 
 ```js
-import Toast from 'muse-ui-toast';
-
-Vue.use(Toast, {
-  position: "top", // 弹出的位置
-  time: 2000, // 显示的时长
-  closeIcon: "close", // 关闭的图标
-  close: true, // 是否显示关闭按钮
-  successIcon: "check_circle", // 成功信息图标
-  infoIcon: "info", // 信息信息图标
-  warningIcon: "priority_high", // 提醒信息图标
-  errorIcon: "warning", // 错误信息图标
-});
-```
-
-同时还使用了以下组件
-
-```js
-import {
-  Button,
-  Select,
-  AppBar,
-  Icon,
-  Popover,
-  List,
-  Avatar,
-  BottomSheet,
-  Pagination,
-  Paper,
-  Chip,
-  Carousel,
-  Card,
-  Tooltip,
-  TextField,
-  Dialog,
-  Snackbar
-} from "muse-ui";
-
-Vue.use(TextField);
-Vue.use(Dialog);
-Vue.use(Snackbar);
+scrollToPosition(id) {
+  var position = $(id).offset();
+  position.top = position.top - 80;
+  $("html,body").animate({ scrollTop: position.top }, 1000);
+},
 ```
 

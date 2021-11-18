@@ -27,7 +27,7 @@ export default {
   // ...
   data(){
     return {
-            content:'在前端开发中， html 转 pdf 是最常见的需求，实现这块需求的开发[html2canvas](http://html2canvas.hertzen.com/)和 [jspdf](http://mozilla.github.io/pdf.js/getting_started/) 是最常用的两个插件，插件都是现成的。\n### 1.安装\n### 2.使用',
+            content: "在前端开发中， html 转 pdf 是最常见的需求，实现这块需求的开发[html2canvas](http://html2canvas.hertzen.com/)和 [jspdf](http://mozilla.github.io/pdf.js/getting_started/) 是最常用的两个插件，插件都是现成的。\n### 1.安装\n### 2.使用 \n ```js \n console.log(123); \n```",
       info: {},
       prev: {},
       next: {},
@@ -63,19 +63,6 @@ global.less添加
 // 文章导航
 .v-note-wrapper .v-note-panel .v-note-navigation-wrapper.transition {
   display: none;
-}
-.v-note-wrapper
-  .v-note-panel
-  .v-note-navigation-wrapper
-  .v-note-navigation-content
-  h3 {
-  padding-left: 20px !important;
-}
-
-@media screen and (max-width: 750px) {
-  .v-note-wrapper .v-note-panel .v-note-show .v-show-content {
-    width: 10rem !important;
-  }
 }
 ```
 
@@ -219,7 +206,7 @@ export const markdown = (mavonEditor, content) => {
 
 ```
 
-+ Global.less新增样式
++ global.less新增样式
 
 ```less
 // 代码高亮
@@ -328,6 +315,55 @@ pre.hljs::after {
 ```
 
 
+
+mounted添加复制功能
+
+先导入
+
+```js
+import Clipboard from "clipboard";
+```
+
+
+
+```js
+this.$nextTick(() => {
+      this.clipboard = new Clipboard(".copy-btn");
+      // 复制成功失败的提示
+      this.clipboard.on("success", () => {
+        this.$toast.success("复制成功");
+      });
+      this.clipboard.on("error", () => {
+        this.$toast.error("复制失败");
+      });
+    });
+```
+
+
+
+使用了muse-ui的toast需要安装下载
+
+```bash
+$ npm install muse-ui-toast -S
+```
+
+Main.js导入和配置
+
+```js
+import Toast from "muse-ui-toast";
+
+Vue.use(Toast, {
+  position: "top", // 弹出的位置
+  time: 2000, // 显示的时长
+  closeIcon: "close", // 关闭的图标
+  close: true, // 是否显示关闭按钮
+  successIcon: "check_circle", // 成功信息图标
+  infoIcon: "info", // 信息信息图标
+  warningIcon: "priority_high", // 提醒信息图标
+  errorIcon: "warning", // 错误信息图标
+});
+
+```
 
 
 
@@ -443,12 +479,6 @@ pre.hljs::after {
             </mu-tooltip>
           </div>
 
-          <mu-card id="comment" class="card">
-            <Comment
-              @comment="comment"
-              :comment-success="commentSuccess"
-            ></Comment>
-          </mu-card>
         </div>
       </div>
     </div>
@@ -458,7 +488,7 @@ pre.hljs::after {
 </template>
 <script>
 import RightConfig from "@/components/RightConfig";
-import Comment from "@/components/Comment";
+
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -473,7 +503,6 @@ export default {
   name: "articlesDetails",
   components: {
     RightConfig,
-    Comment,
     Footer,
     Header,
     mavonEditor,
@@ -520,12 +549,12 @@ export default {
 
 
     this.$nextTick(() => {
-      this.clipboard = new Clipboard(".copy-btn");
+      let clipboard = new Clipboard(".copy-btn");
       // 复制成功失败的提示
-      this.clipboard.on("success", () => {
+      clipboard.on("success", () => {
         this.$toast.success("复制成功");
       });
-      this.clipboard.on("error", () => {
+      clipboard.on("error", () => {
         this.$toast.error("复制失败");
       });
     });
@@ -537,10 +566,6 @@ export default {
       var position = $(id).offset();
       position.top = position.top - 80;
       $("html,body").animate({ scrollTop: position.top }, 1000);
-    },
-    async comment(data) {
-      console.log("评论数据", data);
-      this.commentSuccess = true;
     },
   },
 };

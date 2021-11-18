@@ -1,5 +1,5 @@
 <template>
-  <div class="comment-list">
+  <div>
     <div class="comment-item">
       <mu-card
         class="card"
@@ -104,8 +104,6 @@ export default {
       replayContent: "",
       modalTitle: "",
       user: JSON.parse(localStorage.getItem("user")),
-      showList: [],
-      replayItem: {},
     };
   },
   methods: {
@@ -116,7 +114,6 @@ export default {
       }
       this.open = true;
       this.modalTitle = `回复 @${item.nickName}`;
-      this.replayItem = item;
     },
     close() {
       this.open = false;

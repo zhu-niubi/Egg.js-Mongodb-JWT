@@ -19,17 +19,17 @@
       <div class="friend-link-box">
         <p class="friend-link-title">友情链接</p>
         <div class="friend-links">
-          <mu-button class="link" fab small>
+          <mu-button fab small>
             <mu-avatar size="40">
               <img src="http://www.nevergiveupt.top/github.png" alt />
             </mu-avatar>
           </mu-button>
-          <mu-button class="link" fab small>
+          <mu-button fab small>
             <mu-avatar size="40">
               <img src="http://www.nevergiveupt.top/sf.jpeg" alt />
             </mu-avatar>
           </mu-button>
-          <mu-button class="link" fab small>
+          <mu-button fab small>
             <mu-avatar size="40">
               <img src="http://www.nevergiveupt.top/zhihu.jpg" alt />
             </mu-avatar>
