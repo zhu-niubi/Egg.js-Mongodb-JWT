@@ -4,7 +4,7 @@
   "description": "Arco Design Pro",
   "scripts": {
     "prepublishOnly": "npm run build",
-    "dev": "arco-scripts dev:site --port 9090",
+    "dev": "arco-scripts dev:site --port 8080",
     "build": "arco-scripts build:site",
     "eslint": "eslint src/ --fix --cache --quiet --ext .js,.jsx,.ts,.tsx",
     "stylelint": "stylelint 'components/**/*.less' --fix --cache"

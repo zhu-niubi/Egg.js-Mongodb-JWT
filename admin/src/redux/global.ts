@@ -29,6 +29,10 @@ export interface GlobalState {
 const initialState: GlobalState = {
   theme: defaultTheme,
   settings: defaultSettings,
+  userInfo:{
+    name:'never',
+    avatar:'http://nevergiveupt.top:3000/static/mine.d0f112df.jpeg'
+  }
 };
 
 export default function (state = initialState, action) {
