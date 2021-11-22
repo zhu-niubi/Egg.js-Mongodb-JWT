@@ -29,13 +29,13 @@ export interface GlobalState {
 const initialState: GlobalState = {
   theme: defaultTheme,
   settings: defaultSettings,
-  userInfo:{
-    name:'never',
-    avatar:'http://nevergiveupt.top:3000/static/mine.d0f112df.jpeg'
-  }
+  userInfo: {
+    name: 'never',
+    avatar: 'http://nevergiveupt.top:3000/static/mine.d0f112df.jpeg',
+  },
 };
 
-export default function (state = initialState, action) {
+export default function(state = initialState, action) {
   switch (action.type) {
     case 'toggle-theme': {
       const { theme } = action.payload;
