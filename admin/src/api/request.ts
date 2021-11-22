@@ -11,7 +11,7 @@ export const request = (config) => {
     (config) => {
       return config;
     },
-    (error) => {}
+    () => {}
   );
 
   // 响应拦截

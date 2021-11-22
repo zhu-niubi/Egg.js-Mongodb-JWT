@@ -28,7 +28,7 @@ function Navbar() {
 
   function logout() {
     localStorage.removeItem('token');
-    localStorage.removeItem('userName');
+    localStorage.removeItem('userInfo');
     history.push('/admin/login');
   }
 
