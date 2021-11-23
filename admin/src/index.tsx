@@ -17,7 +17,7 @@ import './mock';
 import Login from './pages/login';
 import checkLogin from './utils/checkLogin';
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
 
 function Index() {
   const localeName = localStorage.getItem('arco-lang') || 'zh-CN';

@@ -5,10 +5,15 @@ import {
   Input,
   Breadcrumb,
   Card,
+  Modal,
+  Form,
+  Message
 } from '@arco-design/web-react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
+  TOGGLE_CONFIRM_LOADING,
+  TOGGLE_VISIBLE,
   UPDATE_FORM_PARAMS,
   UPDATE_LIST,
   UPDATE_LOADING,
@@ -17,10 +22,23 @@ import {
 import useLocale from '../../utils/useLocale';
 import { ReducerState } from '../../redux';
 import styles from './style/index.module.less';
-import { getList } from '../../api/categories';
+import { getList, create } from '../../api/categories';
 
-function SearchTable() {
+const FormItem = Form.Item;
+
+const formItemLayout = {
+  labelCol: {
+    span: 5,
+  },
+  wrapperCol: {
+    span: 19,
+  },
+};
+
+function Categories() {
   const locale = useLocale();
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
 
   const columns = [
     {
@@ -58,9 +76,9 @@ function SearchTable() {
 
   const categoriesState = useSelector((state: ReducerState) => state.categories);
 
-  const { data, pagination, loading, formParams } = categoriesState;
+  const { data, pagination, loading, formParams, visible, confirmLoading } = categoriesState;
 
-  const dispatch = useDispatch();
+
 
   useEffect(() => {
     fetchData();
@@ -81,7 +99,7 @@ function SearchTable() {
         dispatch({ type: UPDATE_LIST, payload: { data: res.list } });
         dispatch({
           type: UPDATE_PAGINATION,
-          payload: { pagination: { ...pagination, current, pageSize, total: res.total } },
+          payload: { pagination: { ...pagination, current, pageSize, total: res.totalCount } },
         });
         dispatch({ type: UPDATE_LOADING, payload: { loading: false } });
         dispatch({ type: UPDATE_FORM_PARAMS, payload: { params } });
@@ -100,14 +118,48 @@ function SearchTable() {
   function onSearch(name) {
     fetchData(1, pagination.pageSize, { name });
   }
-
-  // function onDateChange(date) {
-  //   const [start, end] = date;
-  //   fetchData(1, pagination.pageSize, {
-  //     createdTimeStart: start,
-  //     createdTimeEnd: end,
-  //   });
-  // }
+  const onAdd = () => {
+    dispatch({
+      type: TOGGLE_VISIBLE,
+      payload: {
+        visible: true
+      }
+    })
+  }
+  const onCancel = () => {
+    dispatch({
+      type: TOGGLE_VISIBLE,
+      payload: {
+        visible: false
+      }
+    })
+    form.resetFields();
+  }
+  const onOk = async () => {
+    await form.validate();
+    const data = form.getFields(); // {name:'123'}
+    dispatch({
+      type: TOGGLE_CONFIRM_LOADING,
+      payload: {
+        confirmLoading: true
+      }
+    })
+    const res: any = await create(data);
+    if(res.code === 0){
+      dispatch({
+        type: TOGGLE_CONFIRM_LOADING,
+        payload: {
+          confirmLoading: false
+        }
+      })
+      onCancel();
+      fetchData();
+      Message.success(res.msg);
+    }else {
+      Message.success('添加失败，请重试！');
+    }
+    
+  }
 
   return (
     <div className={styles.container}>
@@ -117,7 +169,7 @@ function SearchTable() {
       <Card bordered={false}>
         <div className={styles.toolbar}>
           <div>
-            <Button type="primary">添加分类</Button>
+            <Button onClick={onAdd} type="primary">添加分类</Button>
           </div>
           <div>
             {/* <DatePicker.RangePicker style={{ marginRight: 8 }} onChange={onDateChange} /> */}
@@ -137,9 +189,29 @@ function SearchTable() {
           columns={columns}
           data={data}
         />
+
+        <Modal
+          title={(
+            <div style={{ textAlign: 'left' }}> 添加分类 </div>
+          )}
+          visible={visible}
+          onOk={onOk}
+          confirmLoading={confirmLoading}
+          onCancel={onCancel}
+        >
+          <Form
+            {...formItemLayout}
+            form={form}
+          >
+            <FormItem label='分类名称' field='name' rules={[{ required: true, message: '请输入分类名称' }]}>
+              <Input placeholder='请输入分类名称' />
+            </FormItem>
+
+          </Form>
+        </Modal>
       </Card>
     </div>
   );
 }
 
-export default SearchTable;
+export default Categories;
