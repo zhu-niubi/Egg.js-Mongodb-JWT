@@ -22,7 +22,8 @@ import {
 import useLocale from '../../utils/useLocale';
 import { ReducerState } from '../../redux';
 import styles from './style/index.module.less';
-import { getList, create } from '../../api/categories';
+import { getList, create, update } from '../../api/categories';
+import { EditableCell, EditableRow } from './edit';
 
 const FormItem = Form.Item;
 
@@ -44,6 +45,7 @@ function Categories() {
     {
       title: '分类名称',
       dataIndex: 'name',
+      editable: true
     },
     {
       title: '文章数量',
@@ -145,7 +147,7 @@ function Categories() {
       }
     })
     const res: any = await create(data);
-    if(res.code === 0){
+    if (res.code === 0) {
       dispatch({
         type: TOGGLE_CONFIRM_LOADING,
         payload: {
@@ -155,8 +157,19 @@ function Categories() {
       onCancel();
       fetchData();
       Message.success(res.msg);
-    }else {
+    } else {
       Message.success('添加失败，请重试！');
+    }
+
+  }
+
+  const onHandleSave = async (row) => {
+    const res: any = await update(row);
+    if(res.code === 0){
+      Message.success(res.msg);
+      fetchData();
+    }else {
+      Message.error('修改失败，请重试！');
     }
     
   }
@@ -186,8 +199,24 @@ function Categories() {
           loading={loading}
           onChange={onChangeTable}
           pagination={pagination}
-          columns={columns}
+          columns={columns.map((column) =>
+            column.editable
+              ? {
+                ...column,
+                onCell: () => ({
+                  onHandleSave,
+                }),
+              }
+              : column
+          )}
           data={data}
+          components={{
+            body: {
+              row: EditableRow,
+              cell: EditableCell,
+            },
+          }}
+          className={styles['table-demo-editable-cell']}
         />
 
         <Modal

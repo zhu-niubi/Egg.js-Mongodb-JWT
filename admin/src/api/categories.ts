@@ -10,7 +10,15 @@ export async function getList(params) {
 export async function create(data) {
     return request({
         url: '/categories',
-        method: 'POST',
+        method: 'post',
         data,
     });
 }
+export async function update(data) {
+    return request({
+        url: '/categories',
+        method: 'put',
+        data,
+    });
+}
+

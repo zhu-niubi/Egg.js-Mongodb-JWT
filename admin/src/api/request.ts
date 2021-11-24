@@ -9,9 +9,13 @@ export const request = (config) => {
   // 请求拦截
   http.interceptors.request.use(
     (config) => {
+      if (config.method === 'put' || config.method === 'delete') {
+        config.url += config.data._id || config.data.id;
+      }
+      console.log('cofing', config);
       return config;
     },
-    () => {}
+    () => { }
   );
 
   // 响应拦截
