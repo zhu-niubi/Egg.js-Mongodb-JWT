@@ -28,4 +28,10 @@ export const routes = [
     icon: <IconStorage />,
     componentPath: 'categories',
   },
+  {
+    name: '标签管理',
+    key: 'tags',
+    icon: <IconStorage />,
+    componentPath: 'tags',
+  },
 ];
