@@ -22,3 +22,11 @@ export async function update(data) {
     });
 }
 
+export async function remove(data) {
+    return request({
+        url: '/categories',
+        method: 'delete',
+        data,
+    });
+}
+

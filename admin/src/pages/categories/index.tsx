@@ -7,7 +7,8 @@ import {
   Card,
   Modal,
   Form,
-  Message
+  Message,
+  Popconfirm
 } from '@arco-design/web-react';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -22,7 +23,7 @@ import {
 import useLocale from '../../utils/useLocale';
 import { ReducerState } from '../../redux';
 import styles from './style/index.module.less';
-import { getList, create, update } from '../../api/categories';
+import { getList, create, update, remove } from '../../api/categories';
 import { EditableCell, EditableRow } from './edit';
 
 const FormItem = Form.Item;
@@ -40,6 +41,9 @@ function Categories() {
   const locale = useLocale();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+
+
+
 
   const columns = [
     {
@@ -63,14 +67,22 @@ function Categories() {
     {
       title: locale['searchTable.columns.operations'],
       dataIndex: 'operations',
-      render: () => (
+      render: (_, record) => (
         <div className={styles.operations}>
-          <Button type="text" size="small">
+          {/* <Button type="text" size="small">
             {locale['searchTable.columns.operations.update']}
-          </Button>
-          <Button type="text" status="danger" size="small">
-            {locale['searchTable.columns.operations.delete']}
-          </Button>
+          </Button> */}
+          <Popconfirm
+            title='Are you sure you want to delete?'
+            onOk={() => onDelete(record)}
+          >
+            <Button type="text" status="danger" size="small">
+              {locale['searchTable.columns.operations.delete']}
+            </Button>
+          </Popconfirm>
+
+
+
         </div>
       ),
     },
@@ -165,13 +177,24 @@ function Categories() {
 
   const onHandleSave = async (row) => {
     const res: any = await update(row);
-    if(res.code === 0){
+    if (res.code === 0) {
       Message.success(res.msg);
       fetchData();
-    }else {
+    } else {
       Message.error('修改失败，请重试！');
     }
-    
+
+  }
+
+  const onDelete = async (row) => {
+    const res: any = await remove(row);
+    if (res.code === 0) {
+      Message.success(res.msg);
+      fetchData();
+    } else {
+      Message.error('删除失败，请重试！');
+    }
+
   }
 
   return (

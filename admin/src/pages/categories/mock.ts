@@ -22,6 +22,15 @@ setupMock({
       console.log('---', params);
 
       switch (params.type) {
+        case 'DELETE':
+          const delBody = JSON.parse(params.body);
+          const idx = data.list.findIndex(item => item._id === delBody._id);
+          data.list.splice(idx, 1);
+          return {
+            "msg": "分类删除成功",
+            "data": null,
+            "code": 0
+          }
         case 'PUT':
           const body = JSON.parse(params.body);
           const index = data.list.findIndex(item => item._id === body._id);

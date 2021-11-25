@@ -83,6 +83,7 @@ export const EditableCell = (props) => {
           rules={[
             {
               required: true,
+              message:'请输入分类名称'
             },
           ]}
         >
@@ -97,8 +98,9 @@ export const EditableCell = (props) => {
       if (rowData.articleNum > 0) {
         return Message.warning('该分类下有文章不能修改！');
       }
+      setEditing(!editing)
     }
-    setEditing(!editing)
+    
   }
 
   return (
