@@ -34,4 +34,10 @@ export const routes = [
     icon: <IconStorage />,
     componentPath: 'tags',
   },
+  {
+    name: '关于管理',
+    key: 'about',
+    icon: <IconStorage />,
+    componentPath: 'about',
+  },
 ];
