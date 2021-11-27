@@ -26,7 +26,7 @@ const About = () => {
     useEffect(() => {
         setTimeout(() => {
             form.setFieldsValue({
-                tags: []
+                tags: ['vue','react']
             })
         }, 3000)
     }, [])
@@ -46,7 +46,7 @@ const About = () => {
                 <Row>
                     <Col span={12}>
                         <Form.Item label="标签云:(1-20个)" field="tags" rules={[{ required: true, message: '请添加标签' }]}>
-                            <BlogTags max={2}/>
+                            <BlogTags max={20}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>

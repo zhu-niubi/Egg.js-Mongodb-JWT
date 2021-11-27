@@ -1,31 +1,69 @@
 import React, { useState, useEffect } from 'react';
 import { Tag, Input, Message } from '@arco-design/web-react';
 import { IconPlus } from '@arco-design/web-react/icon';
+import { randomColor } from '../../../utils/utils';
 
 const Tags = (props) => {
   const [tags, setTags] = useState(props.value || []);
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState('');
-
+  // ['vue','react']
+  // [{name:'vue',color:'red'},{name:'react',color:'blue'}]
+  const init = (arr) => {
+    const newArr = arr?.map(item => {
+      return {
+        name: item,
+        color: randomColor()
+      }
+    })
+    setTags(newArr);
+  }
   useEffect(() => {
-    setTags(props.value);
-  }, [props.value])
+    init(props.value);
+  }, [props.value, tags?.length])
 
   function addTag() {
+    const removeRepeat = (arr) => {
+      let map: any = new Map();
+      for (let item of arr) {
+        console.log(item) //{name:'vue',color:'red'}
+        if (!map.has(item.name)) {
+          map.set(item.name, item);
+        }
+      }
+      return [...map.values()]
+    }
+
     if (inputValue) {
-      tags.push(inputValue);
-      setTags(tags);
+
+      let newTags = tags;
+      tags.push({
+        name: inputValue,
+        color: randomColor()
+      });
+      newTags = removeRepeat(newTags);
+
+
+      setTags(newTags);
       setInputValue('');
-      props.onChange && props.onChange(tags);
+      props.onChange && props.onChange(newTags.map(item => item.name));
     }
     setShowInput(false);
 
   }
 
   function removeTag(removeTag) {
-    const newTags = tags.filter((tag) => tag !== removeTag);
+    console.log('removeTag', removeTag);
+    console.log('tags', tags);
+
+    const newTags = tags.filter((tag) => {
+      if (tag.name !== removeTag) {
+        return tag;
+      }
+    });
+    console.log('newTags', newTags);
     setTags(newTags);
-    props.onChange && props.onChange(newTags);
+    props.onChange && props.onChange(newTags.map(item => item.name));
   }
 
   const handleAdd = () => {
@@ -49,10 +87,11 @@ const Tags = (props) => {
           <Tag
             key={index}
             closable={true}
-            onClose={() => removeTag(tag)}
+            color={tag.color}
+            onClose={() => removeTag(tag.name)}
             style={{ marginRight: 24 }}
           >
-            {tag}
+            {tag.name}
           </Tag>
         );
       })}
