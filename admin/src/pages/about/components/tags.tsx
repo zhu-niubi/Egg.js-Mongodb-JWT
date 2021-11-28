@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Tag, Input, Message } from '@arco-design/web-react';
 import { IconPlus } from '@arco-design/web-react/icon';
 import { randomColor } from '../../../utils/utils';
+import styles from '../style/index.module.less';
+import { TweenOneGroup } from 'rc-tween-one';
 
 const Tags = (props) => {
   const [tags, setTags] = useState(props.value || []);
@@ -20,7 +22,7 @@ const Tags = (props) => {
   }
   useEffect(() => {
     init(props.value);
-  }, [props.value, tags?.length])
+  }, [props.value === undefined])
 
   function addTag() {
     const removeRepeat = (arr) => {
@@ -80,21 +82,42 @@ const Tags = (props) => {
 
   }
 
+  const tagChild = tags?.map((tag) => {
+    const tagElem = <Tag
+      closable={true}
+      color={tag.color}
+      onClose={() => removeTag(tag.name)}
+      style={{ marginRight: 10, marginBottom: 10 }}
+    >
+      {tag.name}
+    </Tag>;
+
+    return (
+      <div className={styles['tags-item']} key={tag.name}>
+        {tagElem}
+      </div>
+    );
+  });
+
   return (
     <div>
-      {tags?.map((tag, index) => {
-        return (
-          <Tag
-            key={index}
-            closable={true}
-            color={tag.color}
-            onClose={() => removeTag(tag.name)}
-            style={{ marginRight: 24 }}
-          >
-            {tag.name}
-          </Tag>
-        );
-      })}
+      <TweenOneGroup enter={{
+        scale: 0.8,
+        opacity: 0,
+        type: 'from',
+        duration: 100
+      }}
+        leave={{
+          opacity: 0,
+          width: 0,
+          scale: 0,
+          duration: 200
+        }}
+        appear={false}
+      >
+        {tagChild}
+      </TweenOneGroup>
+
       {showInput ? (
         <Input
           autoFocus
