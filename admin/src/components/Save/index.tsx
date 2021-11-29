@@ -3,6 +3,8 @@ import { Card, Link, Button } from '@arco-design/web-react';
 import { IconClockCircle, IconRefresh, IconSave, IconArrowLeft } from '@arco-design/web-react/icon';
 import styles from './index.module.less';
 import history from '../../history';
+import { useSelector } from 'react-redux';
+import { ReducerState } from '../../redux';
 
 const Save = (props) => {
     const { time, showBack, onRefresh, onSave, onBack } = props;
@@ -10,7 +12,10 @@ const Save = (props) => {
     const goBack = () => {
         history.goBack();
     }
-    return <Card className={styles.card}>
+  const { collapsed, settings } = useSelector((state: ReducerState) => state.global);
+
+    const width = collapsed ? `calc(100% - 48px)` : `calc(100% - ${settings.menuWidth}px)`;
+    return <Card bordered={false} className={styles.card} style={{width}}>
         <div className={styles.box}>
             <Link icon={<IconClockCircle />}>
                 {message}

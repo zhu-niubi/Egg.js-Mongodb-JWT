@@ -16,6 +16,7 @@ changeTheme();
 export interface GlobalState {
   theme?: string;
   settings?: typeof defaultSettings;
+  collapsed?: boolean;
   userInfo?: {
     name?: string;
     avatar?: string;
@@ -29,13 +30,14 @@ export interface GlobalState {
 const initialState: GlobalState = {
   theme: defaultTheme,
   settings: defaultSettings,
+  collapsed: false,
   userInfo: {
     name: 'never',
     avatar: 'http://nevergiveupt.top:3000/static/mine.d0f112df.jpeg',
   },
 };
 
-export default function(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case 'toggle-theme': {
       const { theme } = action.payload;
@@ -54,6 +56,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         settings,
+      };
+    }
+    case 'TOGGLE_COLLAPSED': {
+      return {
+        ...state,
+        collapsed: action.payload,
       };
     }
     default:
