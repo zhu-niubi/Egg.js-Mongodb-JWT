@@ -27,14 +27,14 @@ const About = () => {
         tags: ['vue', 'react', 'node.js', 'egg.js'],
         showResume: false,
         desc: '',
-        imgs: [
-          {
-            _id: '',
-            imgUrl: 'https://xuwenliu.github.io/img/index.jpg',
-            link: '',
-            icon: ''
-          }
-        ]
+        // imgs: [
+        //   {
+        //     _id: '',
+        //     imgUrl: 'https://xuwenliu.github.io/img/index.jpg',
+        //     link: '',
+        //     icon: ''
+        //   }
+        // ]
       })
     }, 1000)
   }, [])

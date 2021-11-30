@@ -14,3 +14,5 @@ export const colors = [
     'magenta',
     'gray',
 ];
+
+export const imagesType = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']

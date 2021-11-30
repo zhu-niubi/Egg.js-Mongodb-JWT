@@ -15,7 +15,7 @@ const UploadImage = (props) => {
     const initImgs: Array<IImage> = [
         {
             _id: '',
-            imgUrl: 'https://xuwenliu.github.io/img/index.jpg',
+            imgUrl: '',
             link: '',
             icon: ''
         }
