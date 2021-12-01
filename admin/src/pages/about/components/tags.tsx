@@ -18,7 +18,7 @@ const Tags = (props) => {
         color: randomColor()
       }
     })
-    setTags(newArr);
+    setTags(newArr || []);
   }
   useEffect(() => {
     init(props.value);

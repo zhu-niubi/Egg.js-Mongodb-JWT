@@ -6,12 +6,14 @@ import {
   Form,
   Grid,
   Link,
-  Switch
+  Switch,
+  Message
 } from '@arco-design/web-react';
 import styles from './style/index.module.less';
 import BlogTags from './components/tags';
 import Save from '../../components/Save';
 import UploadImage from '../../components/UploadImage';
+import { queryAbout, addAbout, updateAbout } from '../../api/about';
 
 
 const Row = Grid.Row;
@@ -21,32 +23,49 @@ const Col = Grid.Col;
 const About = () => {
   const [form] = Form.useForm();
   const [resetLength, setResetLength] = useState(800);
+  const [showTip, setShowTip] = useState(false);
+  const [time, setTime] = useState();
+
+  const loadData = async (isRefresh?: boolean) => {
+    const res: any = await queryAbout();
+    if (isRefresh) {
+      Message.success('刷新成功');
+    }
+    const data = res.data;
+    if (!data) return;
+    form.setFieldsValue(data);
+    onChangeDesc(data.desc)
+    setTime(data.updateTime);
+  }
   useEffect(() => {
-    setTimeout(() => {
-      form.setFieldsValue({
-        tags: ['vue', 'react', 'node.js', 'egg.js'],
-        showResume: false,
-        desc: '',
-        // imgs: [
-        //   {
-        //     _id: '',
-        //     imgUrl: 'https://xuwenliu.github.io/img/index.jpg',
-        //     link: '',
-        //     icon: ''
-        //   }
-        // ]
-      })
-    }, 1000)
+    loadData();
   }, [])
 
   const onRefresh = () => {
-
+    loadData(true);
   }
 
   const onSave = async () => {
     await form.validate();
     const values = await form.getFields();
-    console.log(values);
+
+    values.imgs = values.imgs?.map(item => {
+      return {
+        _id: item._id,
+        imgUrl: item.imgUrl,
+        link: item.link
+      }
+    })
+    console.log("values", values);
+    const func = values._id ? updateAbout : addAbout;
+    const res: any = await func(values);
+    if (res.data) {
+      loadData();
+      Message.success(res.msg);
+    } else {
+      Message.error('修改失败，请重试');
+
+    }
 
   }
 
@@ -54,7 +73,7 @@ const About = () => {
     setResetLength(800 - value.length);
   }
   return <>
-    <Save time="2021-11-22 13:14:45" onRefresh={onRefresh} onSave={onSave} />
+    <Save time={time} onRefresh={onRefresh} onSave={onSave} />
 
     <div className={styles.container}>
       <Breadcrumb style={{ marginBottom: 20 }}>
@@ -71,15 +90,18 @@ const About = () => {
               <Form.Item label="详细介绍" field="desc" rules={[{ required: true, message: '请输入详细介绍' }, {
                 maxLength: 800, message: '不能超过800个字符'
               }]}>
-                <Input.TextArea rows={5} onChange={onChangeDesc} />
+                <Input.TextArea onFocus={() => setShowTip(true)} onBlur={() => setShowTip(false)} rows={5} onChange={onChangeDesc} />
               </Form.Item>
-              <div className={styles['desc-tip']}>
-                还可以输入
-                <Link status='error'>
-                  {resetLength}
-                </Link>
-                个字符
-              </div>
+              {
+                showTip && <div className={styles['desc-tip']}>
+                  还可以输入
+                  <Link status='error'>
+                    {resetLength}
+                  </Link>
+                  个字符
+                </div>
+              }
+
 
               <Form.Item label="个人简历" field="showResume" triggerPropName="checked">
                 <Switch />

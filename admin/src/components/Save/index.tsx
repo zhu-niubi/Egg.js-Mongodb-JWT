@@ -5,10 +5,11 @@ import styles from './index.module.less';
 import history from '../../history';
 import { useSelector } from 'react-redux';
 import { ReducerState } from '../../redux';
+import dayjs from 'dayjs';
 
 const Save = (props) => {
     const { time, showBack, onRefresh, onSave, onBack } = props;
-    const message = time ? `上次保存时间：${time}` : '暂无操作';
+    const message = time ? `上次保存时间：${dayjs(time * 1000).format('YYYY-MM-DD HH:mm:ss') }` : '暂无操作';
     const goBack = () => {
         history.goBack();
     }
