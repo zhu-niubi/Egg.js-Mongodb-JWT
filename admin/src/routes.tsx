@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconList, IconGift, IconStorage } from '@arco-design/web-react/icon';
+import { IconList, IconGift, IconStorage,IconTags, IconHeart, IconUser } from '@arco-design/web-react/icon';
 
 export const defaultRoute = 'welcome';
 
@@ -10,18 +10,18 @@ export const routes = [
     icon: <IconGift />,
     componentPath: 'welcome',
   },
-  {
-    name: 'menu.list',
-    key: 'list',
-    icon: <IconList />,
-    children: [
-      {
-        name: 'menu.list.searchTable',
-        key: 'list/search-table',
-        componentPath: 'search-table',
-      },
-    ],
-  },
+  // {
+  //   name: 'menu.list',
+  //   key: 'list',
+  //   icon: <IconList />,
+  //   children: [
+  //     {
+  //       name: 'menu.list.searchTable',
+  //       key: 'list/search-table',
+  //       componentPath: 'search-table',
+  //     },
+  //   ],
+  // },
   {
     name: 'menu.categories',
     key: 'categories',
@@ -31,13 +31,19 @@ export const routes = [
   {
     name: '标签管理',
     key: 'tags',
-    icon: <IconStorage />,
+    icon: <IconTags />,
     componentPath: 'tags',
   },
   {
     name: '关于管理',
     key: 'about',
-    icon: <IconStorage />,
+    icon: <IconHeart />,
     componentPath: 'about',
+  },
+  {
+    name: '用户管理',
+    key: 'user',
+    icon: <IconUser />,
+    componentPath: 'user',
   },
 ];

@@ -4,6 +4,7 @@ import searchTable, { SearchTableState } from '../pages/search-table/redux/reduc
 import login, { UserLoginState } from '../pages/login/redux/reducer';
 import categories, { CategoriesState } from '../pages/categories/redux/reducer';
 import tags, { TagsState } from '../pages/tags/redux/reducer';
+import user, { UserState } from '../pages/user/redux/reducer';
 
 
 export interface ReducerState {
@@ -12,6 +13,7 @@ export interface ReducerState {
   login: UserLoginState;
   categories: CategoriesState;
   tags: TagsState;
+  user: UserState;
 }
 
 export default combineReducers({
@@ -19,5 +21,6 @@ export default combineReducers({
   searchTable,
   login,
   categories,
-  tags
+  tags,
+  user
 });
