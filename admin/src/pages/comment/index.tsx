@@ -7,9 +7,6 @@ import {
   Card,
   Message,
   Popconfirm,
-  Image,
-  Tag,
-  Tooltip,
   Select,
   Badge,
   Modal,
@@ -205,10 +202,12 @@ function Categories() {
     setVisible(false);
     form.resetFields();
     setId('');
+    setConfirmLoading(false);
   }
 
   const onOk = async () => {
     await form.validate();
+    setConfirmLoading(true);
     const values = await form.getFields();
     console.log(values);
     const postData = {

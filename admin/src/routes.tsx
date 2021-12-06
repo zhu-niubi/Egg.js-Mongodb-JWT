@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconGift, IconStorage,IconTags, IconHeart, IconUser, IconMessage } from '@arco-design/web-react/icon';
+import { IconGift, IconStorage,IconTags, IconHeart, IconUser, IconMessage, IconSettings, IconHome } from '@arco-design/web-react/icon';
 
 export const defaultRoute = 'welcome';
 
@@ -51,5 +51,18 @@ export const routes = [
     key: 'comment',
     icon: <IconMessage />,
     componentPath: 'comment',
+  },
+  {
+    name: '网页配置',
+    key: 'site',
+    icon: <IconSettings />,
+    children:[
+      {
+        name: '首页配置',
+        key: 'home',
+        icon: <IconHome />,
+        componentPath: 'site/home',
+      }
+    ]
   },
 ];

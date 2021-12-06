@@ -2,8 +2,6 @@ import Mock from 'mockjs';
 import qs from 'query-string';
 import setupMock from '../../utils/setupMock';
 
-const Random = Mock.Random;
-
 
 const data = {
   list:[
