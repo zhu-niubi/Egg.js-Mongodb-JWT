@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconList, IconGift, IconStorage,IconTags, IconHeart, IconUser } from '@arco-design/web-react/icon';
+import { IconGift, IconStorage,IconTags, IconHeart, IconUser, IconMessage } from '@arco-design/web-react/icon';
 
 export const defaultRoute = 'welcome';
 
@@ -45,5 +45,11 @@ export const routes = [
     key: 'user',
     icon: <IconUser />,
     componentPath: 'user',
+  },
+  {
+    name: '评论管理',
+    key: 'comment',
+    icon: <IconMessage />,
+    componentPath: 'comment',
   },
 ];
