@@ -8,7 +8,7 @@ import {
 } from '@arco-design/web-react';
 import Save from '../../../../components/Save';
 import UploadImage from '../../../../components/UploadImage';
-import { queryItroduction, addIntroduction, updateIntroduction } from '../../../../api/site/right';
+import { queryIntroduction, addIntroduction, updateIntroduction } from '../../../../api/site/right';
 import { getList } from '../../../../api/tags';
 import { showPositions } from '../../../../const';
 
@@ -23,7 +23,7 @@ const Tab0 = () => {
 
 
   const loadData = async (isRefresh?: boolean) => {
-    const res: any = await queryItroduction();
+    const res: any = await queryIntroduction();
     if (isRefresh) {
       Message.success('刷新成功');
     }

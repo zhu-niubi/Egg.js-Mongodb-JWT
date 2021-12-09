@@ -7,6 +7,7 @@ import {
 import styles from './style/index.module.less';
 
 import Tab0 from './components/tab0';
+import Tab1 from './components/tab1';
 
 
 
@@ -25,6 +26,7 @@ const HeaderFooter = () => {
               <Tab0 />
             </Tabs.TabPane>
             <Tabs.TabPane key='1' title='广告设置'>
+              <Tab1 />
             </Tabs.TabPane>
             <Tabs.TabPane key='2' title='推荐设置'>
             
