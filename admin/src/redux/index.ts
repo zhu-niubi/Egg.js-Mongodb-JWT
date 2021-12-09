@@ -6,6 +6,7 @@ import categories, { CategoriesState } from '../pages/categories/redux/reducer';
 import tags, { TagsState } from '../pages/tags/redux/reducer';
 import user, { UserState } from '../pages/user/redux/reducer';
 import comment, { CommentState } from '../pages/comment/redux/reducer';
+import recommend, { RecommendState } from '../pages/site/right/components/redux/reducer';
 
 
 export interface ReducerState {
@@ -15,7 +16,8 @@ export interface ReducerState {
   categories: CategoriesState;
   tags: TagsState;
   user: UserState;
-  comment:CommentState;
+  comment: CommentState;
+  recommend: RecommendState;
 }
 
 export default combineReducers({
@@ -25,5 +27,6 @@ export default combineReducers({
   categories,
   tags,
   user,
-  comment
+  comment,
+  recommend
 });

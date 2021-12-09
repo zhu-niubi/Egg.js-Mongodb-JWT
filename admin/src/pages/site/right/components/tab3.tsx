@@ -9,10 +9,16 @@ import {
   Form,
   Message,
   Popconfirm,
-  Switch
+  Switch,
+  Select,
+  Badge,
+  Avatar,
+  Typography,
+  Tooltip,
+  Tag
 } from '@arco-design/web-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { IconCheck, IconClose } from '@arco-design/web-react/icon';
+import { IconCheck, IconClose, IconLink } from '@arco-design/web-react/icon';
 import {
   TOGGLE_CONFIRM_LOADING,
   TOGGLE_VISIBLE,
@@ -21,11 +27,13 @@ import {
   UPDATE_LOADING,
   UPDATE_PAGINATION,
 } from './redux/actionTypes';
-import useLocale from '../../utils/useLocale';
-import { ReducerState } from '../../redux';
+import useLocale from '../../../../utils/useLocale';
+import { ReducerState } from '../../../../redux';
 import styles from './style/index.module.less';
-import { getList, create, update, remove, updateStatus } from '../../api/tags';
-import { EditableCell, EditableRow } from './edit';
+import { getListCecommend, createRecommend, updateRecommend, removeRecommend } from '../../../../api/site/right';
+import { projects, showPositionsColorObj } from '../../../../const';
+import dayjs from 'dayjs';
+import copy from 'copy-to-clipboard';
 
 const FormItem = Form.Item;
 
@@ -38,7 +46,7 @@ const formItemLayout = {
   },
 };
 
-function Tags() {
+function Tab3() {
   const locale = useLocale();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
@@ -46,31 +54,88 @@ function Tags() {
 
 
 
-
+  const copyLink = (msg) => {
+    if (copy(msg)) {
+      Message.success('复制成功')
+    } else {
+      Message.error('复制失败')
+    }
+  }
   const columns = [
     {
-      title: '标签名称',
+      title: '类别',
+      dataIndex: 'project',
+      render: (_, record) => {
+        const colorObj = {
+          1: 'purple',
+          2: 'pink',
+          3: '#52c41a',
+        }
+        const text = projects[+record.project - 1].value;
+        return <Badge dotStyle={{ background: colorObj[record.project] }} text={text}>
+
+        </Badge>
+      }
+    },
+    {
+      title: '名称',
       dataIndex: 'name',
-      editable: true
     },
     {
-      title: '文章数量',
-      dataIndex: 'articleNum',
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
+      title: '封面',
+      dataIndex: 'cover',
       render: (_, record: any) => {
-        return <Switch checkedIcon={<IconCheck />} uncheckedIcon={<IconClose />} checked={record.status} onChange={(checked) => onStatusChange(checked, record)} />
+        return <Avatar shape='square'>
+          <img src={record.cover} />
+        </Avatar>
+      }
+    },
+    {
+      title: '链接',
+      dataIndex: 'link',
+      render: (_, record) => {
+        return <Tooltip content={record.link}>
+          <a style={{ cursor: 'pointer' }}><IconLink onClick={() => copyLink(record.link)} /></a>
+        </Tooltip>
+      }
+    },
+    {
+      title: 'VIP',
+      dataIndex: 'isVip',
+      render: (_, record) => {
+        return record.isVip ? '是' : '否'
+      }
+    },
+    {
+      title: '展示位置',
+      dataIndex: 'showPosition',
+      render: (_, record) => {
+        let result = [];
+        for (let i = 0; i < record.showPosition.length; i += 3) {
+          result.push(record.showPosition.slice(i, i + 3)) // i=0 0-3 i=3 3-6 
+        }
+        return result.map((item, index) => {
+          return <div style={{ marginBottom: 10 }} key={index}>
+            {
+              item.map(sub => <Tag style={{ marginRight: 10 }} key={sub} color={showPositionsColorObj[sub]}>{sub}</Tag>)
+            }
+          </div>
+        })
       }
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
+      render: (_, record) => {
+        return dayjs(record.createTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+      }
     },
     {
       title: '修改时间',
       dataIndex: 'updateTime',
+      render: (_, record) => {
+        return record.updateTime ? dayjs(record.updateTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '-';
+      }
     },
 
     {
@@ -98,9 +163,9 @@ function Tags() {
     },
   ];
 
-  const categoriesState = useSelector((state: ReducerState) => state.categories);
+  const recommendState = useSelector((state: ReducerState) => state.recommend);
 
-  const { data, pagination, loading, formParams, visible, confirmLoading } = categoriesState;
+  const { data, pagination, loading, formParams, visible, confirmLoading } = recommendState;
 
 
 
@@ -117,7 +182,7 @@ function Tags() {
         ...params,
       };
       console.log(postData);
-      const res: any = await getList(postData);
+      const res: any = await getListCecommend(postData);
       console.log(res);
       if (res) {
         dispatch({ type: UPDATE_LIST, payload: { data: res.list } });
@@ -139,20 +204,10 @@ function Tags() {
     fetchData(current, pageSize, formParams);
   }
 
-  function onSearch(name) {
-    fetchData(1, pagination.pageSize, { name });
+  const onSelectChange = (project) => {
+    fetchData(1, pagination.pageSize, { project });
   }
 
-  const onStatusChange = async (status: boolean, row) => {
-    const res: any = await updateStatus({ id: row._id, status });
-    if (res.code === 0) {
-      Message.success(res.msg);
-      fetchData();
-    } else {
-      Message.error('修改失败，请重试！');
-    }
-
-  }
   const onAdd = () => {
     dispatch({
       type: TOGGLE_VISIBLE,
@@ -174,9 +229,9 @@ function Tags() {
     await form.validate();
     const data = form.getFields(); // {name:'123'}
     console.log('data', data);
-    let func = create;
+    let func = createRecommend;
     if (data._id) {
-      func = update;
+      func = updateRecommend;
     }
     dispatch({
       type: TOGGLE_CONFIRM_LOADING,
@@ -202,7 +257,7 @@ function Tags() {
   }
 
   const onHandleSave = async (row) => {
-    const res: any = await update(row);
+    const res: any = await updateRecommend(row);
     if (res.code === 0) {
       Message.success(res.msg);
       fetchData();
@@ -223,7 +278,7 @@ function Tags() {
   }
 
   const onDelete = async (row) => {
-    const res: any = await remove(row);
+    const res: any = await removeRecommend(row);
     if (res.code === 0) {
       Message.success(res.msg);
       fetchData();
@@ -233,24 +288,29 @@ function Tags() {
 
   }
 
+
+
   return (
     <div className={styles.container}>
-      <Breadcrumb style={{ marginBottom: 20 }}>
-        <Breadcrumb.Item>标签管理</Breadcrumb.Item>
-      </Breadcrumb>
       <Card bordered={false}>
         <div className={styles.toolbar}>
           <div>
-            <Button onClick={onAdd} type="primary">添加标签</Button>
+            <Button onClick={onAdd} type="primary">添加推荐</Button>
           </div>
           <div>
-            {/* <DatePicker.RangePicker style={{ marginRight: 8 }} onChange={onDateChange} /> */}
-            <Input.Search
+            <Select
               style={{ width: 300 }}
-              searchButton
-              placeholder='请输入标签名称'
-              onSearch={onSearch}
-            />
+              placeholder='请选择推荐项目'
+              onChange={onSelectChange}
+              defaultValue=""
+
+            >{
+                [{
+                  key: '',
+                  value: '全部',
+                }, , ...projects].map(item => <Select.Option key={item.key} value={item.key}>{item.value}</Select.Option>)
+              }
+            </Select>
           </div>
         </div>
         <Table
@@ -258,24 +318,8 @@ function Tags() {
           loading={loading}
           onChange={onChangeTable}
           pagination={pagination}
-          columns={columns.map((column) =>
-            column.editable
-              ? {
-                ...column,
-                onCell: () => ({
-                  onHandleSave,
-                }),
-              }
-              : column
-          )}
+          columns={columns}
           data={data}
-          components={{
-            body: {
-              row: EditableRow,
-              cell: EditableCell,
-            },
-          }}
-          className={styles['table-demo-editable-cell']}
         />
 
         <Modal
@@ -302,4 +346,4 @@ function Tags() {
   );
 }
 
-export default Tags;
+export default Tab3;
