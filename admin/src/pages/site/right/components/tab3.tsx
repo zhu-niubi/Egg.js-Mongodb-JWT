@@ -3,22 +3,20 @@ import {
   Table,
   Button,
   Input,
-  Breadcrumb,
   Card,
   Modal,
   Form,
   Message,
   Popconfirm,
-  Switch,
   Select,
   Badge,
   Avatar,
-  Typography,
   Tooltip,
-  Tag
+  Tag,
+  Radio
 } from '@arco-design/web-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { IconCheck, IconClose, IconLink } from '@arco-design/web-react/icon';
+import { IconLink } from '@arco-design/web-react/icon';
 import {
   TOGGLE_CONFIRM_LOADING,
   TOGGLE_VISIBLE,
@@ -30,12 +28,13 @@ import {
 import useLocale from '../../../../utils/useLocale';
 import { ReducerState } from '../../../../redux';
 import styles from './style/index.module.less';
-import { getListCecommend, createRecommend, updateRecommend, removeRecommend } from '../../../../api/site/right';
-import { projects, showPositionsColorObj } from '../../../../const';
+import { getListRecommend, createRecommend, updateRecommend, removeRecommend } from '../../../../api/site/right';
+import { projects, showPositions, showPositionsColorObj } from '../../../../const';
 import dayjs from 'dayjs';
 import copy from 'copy-to-clipboard';
+import UploadImage from '../../../../components/UploadImage';
 
-const FormItem = Form.Item;
+
 
 const formItemLayout = {
   labelCol: {
@@ -182,7 +181,7 @@ function Tab3() {
         ...params,
       };
       console.log(postData);
-      const res: any = await getListCecommend(postData);
+      const res: any = await getListRecommend(postData);
       console.log(res);
       if (res) {
         dispatch({ type: UPDATE_LIST, payload: { data: res.list } });
@@ -229,6 +228,12 @@ function Tab3() {
     await form.validate();
     const data = form.getFields(); // {name:'123'}
     console.log('data', data);
+
+    if(data.imgs && data.imgs.length){
+      data.cover = data.imgs[0].imgUrl;
+      data.link = data.imgs[0].link;
+    }
+   
     let func = createRecommend;
     if (data._id) {
       func = updateRecommend;
@@ -256,16 +261,6 @@ function Tab3() {
 
   }
 
-  const onHandleSave = async (row) => {
-    const res: any = await updateRecommend(row);
-    if (res.code === 0) {
-      Message.success(res.msg);
-      fetchData();
-    } else {
-      Message.error('修改失败，请重试！');
-    }
-
-  }
   const onUpdate = (row) => {
     dispatch({
       type: TOGGLE_VISIBLE,
@@ -273,6 +268,10 @@ function Tab3() {
         visible: true
       }
     })
+    row.imgs = [{
+      imgUrl:row.cover,
+      link:row.link
+    }]
     form.setFieldsValue(row);
     setTitle('修改标签')
   }
@@ -308,7 +307,7 @@ function Tab3() {
                 [{
                   key: '',
                   value: '全部',
-                }, , ...projects].map(item => <Select.Option key={item.key} value={item.key}>{item.value}</Select.Option>)
+                }, ...projects].map(item => <Select.Option key={item.key} value={item.key}>{item.value}</Select.Option>)
               }
             </Select>
           </div>
@@ -335,9 +334,44 @@ function Tab3() {
             {...formItemLayout}
             form={form}
           >
-            <FormItem label='标签名称' field='name' rules={[{ required: true, message: '请输入标签名称' }]}>
-              <Input placeholder='请输入标签名称' />
-            </FormItem>
+
+            <Form.Item label='推荐项目' field='project' rules={[{ required: true, message: '请选择推荐项目' }]}>
+              <Select
+                placeholder='请选择推荐项目'
+              >{
+                  projects.map(item => <Select.Option key={item.key} value={item.key}>{item.value}</Select.Option>)
+                }
+              </Select>
+            </Form.Item>
+            <Form.Item label='名称' field='name' rules={[{ required: true, message: '请输入名称' }]}>
+              <Input placeholder='请输入名称' />
+            </Form.Item>
+
+            <Form.Item label="展示位置" field="showPosition" rules={[{ required: true, message: '请选择展示位置' }]}>
+              <Select mode='multiple' placeholder="请选择展示位置">
+                {showPositions.map((option) => (
+                  <Select.Option key={option} value={option}>
+                    {option}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+
+            <Form.Item label='平台' field='platform' rules={[{ required: true, message: '请输入平台' }]}>
+              <Input placeholder='请输入平台' />
+            </Form.Item>
+
+            <Form.Item label='是否需要VIP' field='isVip' >
+              <Radio.Group>
+                <Radio value={true}>是</Radio>
+                <Radio value={false}>否</Radio>
+              </Radio.Group>
+            </Form.Item>
+
+            <Form.Item label='封面/链接' field='imgs' rules={[{ required: true, message: '请上传封面/链接' }]} >
+              <UploadImage />
+            </Form.Item>
 
           </Form>
         </Modal>

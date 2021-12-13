@@ -42,7 +42,7 @@ export async function updateAd(data) {
     });
 }
 
-export async function getListCecommend(params) {
+export async function getListRecommend(params) {
     return request({
         url: '/config/right/recommend',
         params,

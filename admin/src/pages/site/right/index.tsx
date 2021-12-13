@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Breadcrumb,
   Card,
@@ -14,6 +14,10 @@ import Tab3 from './components/tab3';
 
 
 const HeaderFooter = () => {
+  const [key, setKey] = useState('0');
+  const onTabChange = (key) => {
+    setKey(key)
+  }
 
   return <>
     <div className={styles.container}>
@@ -22,15 +26,22 @@ const HeaderFooter = () => {
       </Breadcrumb>
 
       <Card hoverable>
-        <Tabs defaultActiveTab='0' >
+        <Tabs activeTab={key} onChange={onTabChange}>
+
           <Tabs.TabPane key='0' title='个人简介'>
-            <Tab0 />
+            {
+              key == '0' && <Tab0 />
+            }
           </Tabs.TabPane>
           <Tabs.TabPane key='1' title='广告设置'>
-            <Tab1 />
+            {
+              key == '1' && <Tab1 />
+            }
           </Tabs.TabPane>
           <Tabs.TabPane key='2' title='推荐设置'>
-            <Tab3 />
+            {
+              key == '2' && <Tab3 />
+            }
           </Tabs.TabPane>
         </Tabs>
       </Card>
