@@ -15,6 +15,7 @@ import {
   Switch,
   DatePicker,
   Grid,
+  Radio,
 } from '@arco-design/web-react';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -27,7 +28,7 @@ import {
 } from './redux/actionTypes';
 import { ReducerState } from '../../redux';
 import styles from './style/index.module.less';
-import { getList, remove, updateStatus, updatePublishStatus } from '../../api/articles';
+import { getList, remove, updateStatus, updatePublishStatus, updateCollectStatus } from '../../api/articles';
 import { publishStatusOptions, statusOptions } from '../../const';
 import dayjs from 'dayjs';
 import { getList as getTagsList } from '../../api/tags';
@@ -89,9 +90,7 @@ function Articles() {
   };
 
   // 查看
-  const onView = (record) => {
-
-  };
+  const onView = (record) => {};
 
   // 文章状态修改
   const onStatusChange = async (checked, record) => {
@@ -324,7 +323,9 @@ function Articles() {
   };
 
   const onDelete = async (row) => {
-    const res: any = await remove(row);
+    const res: any = await remove({
+      id: row._id,
+    });
     if (res.code === 0) {
       Message.success(res.msg);
       fetchData();
@@ -332,6 +333,18 @@ function Articles() {
       Message.error('删除失败，请重试！');
     }
   };
+
+  const handleUpdateCollectStatus = async (isCollect) => {
+    const res: any = await updateCollectStatus({
+      isCollect
+    });
+    if (res.code === 0) {
+      Message.success(res.msg);
+      fetchData();
+    } else {
+      Message.error('一键操作失败，请重试！');
+    }
+  }
 
   const layout = {
     labelCol: {
@@ -354,14 +367,10 @@ function Articles() {
               添加文章
             </Button>
 
-            <Button.Group style={{ marginLeft: 20 }}>
-              <Button type="default" style={{ padding: '0 8px' }}>
-                一键开启收藏
-              </Button>
-              <Button status="danger" style={{ padding: '0 8px' }}>
-                一键关闭收藏
-              </Button>
-            </Button.Group>
+            <Radio.Group onChange={handleUpdateCollectStatus} type="button" name="lang" style={{ marginLeft: 20 }}>
+              <Radio value={true}>一键开启收藏</Radio>
+              <Radio value={false}>一键关闭收藏</Radio>
+            </Radio.Group>
           </div>
         </div>
 
