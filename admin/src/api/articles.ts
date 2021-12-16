@@ -37,3 +37,10 @@ export async function updateStatus(data) {
     });
 }
 
+export async function updatePublishStatus(data) {
+    return request({
+        url: '/articles/publishStatus',
+        method: 'put',
+        data,
+    });
+}

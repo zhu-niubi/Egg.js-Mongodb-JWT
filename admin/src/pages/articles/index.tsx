@@ -4,25 +4,21 @@ import {
   Button,
   Input,
   Card,
-  Modal,
   Form,
   Message,
   Popconfirm,
   Select,
   Badge,
   Avatar,
-  Tooltip,
   Tag,
-  Radio,
   Breadcrumb,
   Switch,
   DatePicker,
   Grid,
 } from '@arco-design/web-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { IconCheck, IconLink } from '@arco-design/web-react/icon';
+
 import {
-  TOGGLE_CONFIRM_LOADING,
   TOGGLE_VISIBLE,
   UPDATE_FORM_PARAMS,
   UPDATE_LIST,
@@ -31,36 +27,18 @@ import {
 } from './redux/actionTypes';
 import { ReducerState } from '../../redux';
 import styles from './style/index.module.less';
-import { getList, create, update, remove } from '../../api/articles';
-import {
-  projects,
-  publishStatusOptions,
-  showPositions,
-  showPositionsColorObj,
-  statusOptions,
-} from '../../const';
+import { getList, remove, updateStatus, updatePublishStatus } from '../../api/articles';
+import { publishStatusOptions, statusOptions } from '../../const';
 import dayjs from 'dayjs';
-import copy from 'copy-to-clipboard';
-import UploadImage from '../../components/UploadImage';
 import { getList as getTagsList } from '../../api/tags';
 import { getList as getCategoriesList } from '../../api/categories';
 
 const Row = Grid.Row;
 const Col = Grid.Col;
 
-const formItemLayout = {
-  labelCol: {
-    span: 5,
-  },
-  wrapperCol: {
-    span: 19,
-  },
-};
-
 function Articles() {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const [title, setTitle] = useState('添加标签');
   const [tagsArr, setTagsArr] = useState([]);
   const [categoriesArr, setCategoriesArr] = useState([]);
 
@@ -95,22 +73,40 @@ function Articles() {
     getCategories();
   }, []);
 
-  const copyLink = (msg) => {
-    if (copy(msg)) {
-      Message.success('复制成功');
+  // 发布状态修改
+  const onChangePublishStatus = async (record) => {
+    const postData = {
+      id: record._id,
+      publishStatus: record.publishStatus === 1 ? 2 : 1,
+    };
+    const res: any = await updatePublishStatus(postData);
+    if (res.code === 0) {
+      Message.success(res.msg);
+      fetchData();
     } else {
-      Message.error('复制失败');
+      Message.error('文章状态修改失败，请重试！');
     }
   };
 
-  // 发布状态修改
-  const onChangePublishStatus = (record) => {};
-
   // 查看
-  const onView = (record) => {};
+  const onView = (record) => {
 
-  // 审核状态修改
-  const onStatusChange = (checked, record) => {};
+  };
+
+  // 文章状态修改
+  const onStatusChange = async (checked, record) => {
+    const postData = {
+      id: record._id,
+      status: checked ? 1 : 2,
+    };
+    const res: any = await updateStatus(postData);
+    if (res.code === 0) {
+      Message.success(res.msg);
+      fetchData();
+    } else {
+      Message.error('文章状态修改失败，请重试！');
+    }
+  };
   const columns = [
     {
       title: '文章标题',
@@ -181,7 +177,7 @@ function Articles() {
     {
       title: '发布状态',
       dataIndex: 'publishStatus',
-      render: (text, record) => {
+      render: (_, record) => {
         const texts = {
           1: '已发布',
           2: '未发布',
@@ -224,7 +220,6 @@ function Articles() {
           </Button>
           {record.publishStatus === 2 && (
             <>
-              {' '}
               <Button onClick={() => onUpdate(record)} type="text" size="small">
                 修改
               </Button>
@@ -242,7 +237,7 @@ function Articles() {
 
   const articlesState = useSelector((state: ReducerState) => state.articles);
 
-  const { data, pagination, loading, formParams, visible, confirmLoading } = articlesState;
+  const { data, pagination, loading, formParams } = articlesState;
 
   useEffect(() => {
     fetchData();
@@ -279,7 +274,7 @@ function Articles() {
   const onReset = () => {
     form.resetFields();
     fetchData();
-  }
+  };
 
   const onSearch = async () => {
     const values = await form.getFields();
@@ -297,9 +292,8 @@ function Articles() {
       postData.updateStartTime = dayjs(postData.updateTime[0]).unix();
       postData.updateEndTime = dayjs(postData.updateTime[1]).unix();
       delete postData.updateTime;
-
     }
-    console.log("postData",postData);
+    console.log('postData', postData);
 
     fetchData(1, pagination.pageSize, postData);
   };
@@ -311,50 +305,6 @@ function Articles() {
         visible: true,
       },
     });
-  };
-  const onCancel = () => {
-    dispatch({
-      type: TOGGLE_VISIBLE,
-      payload: {
-        visible: false,
-      },
-    });
-    form.resetFields();
-  };
-  const onOk = async () => {
-    await form.validate();
-    const data = form.getFields(); // {name:'123'}
-    console.log('data', data);
-
-    if (data.imgs && data.imgs.length) {
-      data.cover = data.imgs[0].imgUrl;
-      data.link = data.imgs[0].link;
-    }
-
-    let func = create;
-    if (data._id) {
-      func = update;
-    }
-    dispatch({
-      type: TOGGLE_CONFIRM_LOADING,
-      payload: {
-        confirmLoading: true,
-      },
-    });
-    const res: any = await func(data);
-    if (res.code === 0) {
-      dispatch({
-        type: TOGGLE_CONFIRM_LOADING,
-        payload: {
-          confirmLoading: false,
-        },
-      });
-      onCancel();
-      fetchData();
-      Message.success(res.msg);
-    } else {
-      Message.success('添加失败，请重试！');
-    }
   };
 
   const onUpdate = (row) => {
@@ -371,7 +321,6 @@ function Articles() {
       },
     ];
     form.setFieldsValue(row);
-    setTitle('修改标签');
   };
 
   const onDelete = async (row) => {
@@ -526,74 +475,6 @@ function Articles() {
           columns={columns}
           data={data}
         />
-        {/* 
-        <Modal
-          title={<div style={{ textAlign: 'left' }}> {title} </div>}
-          visible={visible}
-          onOk={onOk}
-          confirmLoading={confirmLoading}
-          onCancel={onCancel}
-        >
-          <Form {...formItemLayout} form={form}>
-            <Form.Item
-              label="推荐项目"
-              field="project"
-              rules={[{ required: true, message: '请选择推荐项目' }]}
-            >
-              <Select placeholder="请选择推荐项目">
-                {projects.map((item) => (
-                  <Select.Option key={item.key} value={item.key}>
-                    {item.value}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item
-              label="名称"
-              field="name"
-              rules={[{ required: true, message: '请输入名称' }]}
-            >
-              <Input placeholder="请输入名称" />
-            </Form.Item>
-
-            <Form.Item
-              label="展示位置"
-              field="showPosition"
-              rules={[{ required: true, message: '请选择展示位置' }]}
-            >
-              <Select mode="multiple" placeholder="请选择展示位置">
-                {showPositions.map((option) => (
-                  <Select.Option key={option} value={option}>
-                    {option}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label="平台"
-              field="platform"
-              rules={[{ required: true, message: '请输入平台' }]}
-            >
-              <Input placeholder="请输入平台" />
-            </Form.Item>
-
-            <Form.Item label="是否需要VIP" field="isVip">
-              <Radio.Group>
-                <Radio value={true}>是</Radio>
-                <Radio value={false}>否</Radio>
-              </Radio.Group>
-            </Form.Item>
-
-            <Form.Item
-              label="封面/链接"
-              field="imgs"
-              rules={[{ required: true, message: '请上传封面/链接' }]}
-            >
-              <UploadImage />
-            </Form.Item>
-          </Form>
-        </Modal> */}
       </Card>
     </div>
   );

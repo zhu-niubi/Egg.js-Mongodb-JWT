@@ -52,7 +52,7 @@ const data = {
       "sort": 0,
       "createTime": 1620474997,
       "updateTime": 1620479875,
-      "_id": "60967c75c4b76ef12cd14bb5",
+      "_id": "60967c75c4b76ef12cd14bb6",
       "content": "123",
       "title": "文章标题",
       "introduction": "文章简介",
@@ -67,6 +67,37 @@ const data = {
 
 setupMock({
   setup() {
+    Mock.mock(new RegExp('/api/v1/articles/status'), (params) => {
+      switch (params.type) {
+        case 'PUT':
+          const body = JSON.parse(params.body);
+          console.log('body',body);
+          
+          const index = data.list.findIndex(item => item._id === body.id);
+          data.list[index] = { ...data.list[index], ...body };
+          return {
+            "msg": "文章状态修改成功",
+            "data": null,
+            "code": 0
+          }
+      }
+    });
+
+    Mock.mock(new RegExp('/api/v1/articles/publishStatus'), (params) => {
+      switch (params.type) {
+        case 'PUT':
+          const body = JSON.parse(params.body);
+          console.log('body',body);
+          
+          const index = data.list.findIndex(item => item._id === body.id);
+          data.list[index] = { ...data.list[index], ...body };
+          return {
+            "msg": "文章发布状态修改成功",
+            "data": null,
+            "code": 0
+          }
+      }
+    });
     Mock.mock(new RegExp('/api/v1/articles'), (params) => {
       console.log('---', params);
 
