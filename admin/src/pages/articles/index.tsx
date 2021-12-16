@@ -42,6 +42,9 @@ import {
 import dayjs from 'dayjs';
 import copy from 'copy-to-clipboard';
 import UploadImage from '../../components/UploadImage';
+import { getList as getTagsList } from '../../api/tags';
+import { getList as getCategoriesList } from '../../api/categories';
+
 const Row = Grid.Row;
 const Col = Grid.Col;
 
@@ -58,6 +61,39 @@ function Articles() {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [title, setTitle] = useState('添加标签');
+  const [tagsArr, setTagsArr] = useState([]);
+  const [categoriesArr, setCategoriesArr] = useState([]);
+
+  const getTags = async () => {
+    const res: any = await getTagsList({
+      page: 1,
+      pageSize: 9999,
+    });
+    const list = res.list?.map((item) => {
+      item.key = item._id;
+      item.value = item.name;
+      return item;
+    });
+    setTagsArr(list);
+  };
+
+  const getCategories = async () => {
+    const res: any = await getCategoriesList({
+      page: 1,
+      pageSize: 9999,
+    });
+    const list = res.list?.map((item) => {
+      item.key = item._id;
+      item.value = item.name;
+      return item;
+    });
+    setCategoriesArr(list);
+  };
+
+  useEffect(() => {
+    getTags();
+    getCategories();
+  }, []);
 
   const copyLink = (msg) => {
     if (copy(msg)) {
@@ -240,8 +276,32 @@ function Articles() {
     fetchData(current, pageSize, formParams);
   }
 
-  const onSelectChange = (project) => {
-    fetchData(1, pagination.pageSize, { project });
+  const onReset = () => {
+    form.resetFields();
+    fetchData();
+  }
+
+  const onSearch = async () => {
+    const values = await form.getFields();
+    const postData = values;
+    if (postData.tags) {
+      postData.tags = postData.tags.join(',');
+    }
+    if (postData.createTime) {
+      postData.createStartTime = dayjs(postData.createTime[0]).unix();
+      postData.createEndTime = dayjs(postData.createTime[1]).unix();
+      delete postData.createTime;
+    }
+
+    if (postData.updateTime) {
+      postData.updateStartTime = dayjs(postData.updateTime[0]).unix();
+      postData.updateEndTime = dayjs(postData.updateTime[1]).unix();
+      delete postData.updateTime;
+
+    }
+    console.log("postData",postData);
+
+    fetchData(1, pagination.pageSize, postData);
   };
 
   const onAdd = () => {
@@ -356,23 +416,32 @@ function Articles() {
           </div>
         </div>
 
-        <Form {...layout} style={{ marginBottom: 20 }} layout="horizontal">
+        <Form
+          form={form}
+          initialValues={{
+            categories: '',
+            status: '0',
+            publishStatus: '0',
+          }}
+          {...layout}
+          style={{ marginBottom: 20 }}
+          layout="horizontal"
+        >
           <Row>
             <Col span={6}>
-              {' '}
-              <Form.Item label="文章标题">
+              <Form.Item field="title" label="文章标题">
                 <Input placeholder="请输入文章标题" />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item label="分类">
-                <Select placeholder="请选择分类" defaultValue="">
+              <Form.Item field="categories" label="分类">
+                <Select placeholder="请选择分类">
                   {[
                     {
                       key: '',
                       value: '全部',
                     },
-                    ...projects,
+                    ...categoriesArr,
                   ].map((item) => (
                     <Select.Option key={item.key} value={item.key}>
                       {item.value}
@@ -382,16 +451,9 @@ function Articles() {
               </Form.Item>
             </Col>
             <Col span={6}>
-              {' '}
-              <Form.Item label="标签">
-                <Select mode="multiple" placeholder="请选择标签" defaultValue="">
-                  {[
-                    {
-                      key: '',
-                      value: '全部',
-                    },
-                    ...projects,
-                  ].map((item) => (
+              <Form.Item field="tags" label="标签">
+                <Select mode="multiple" placeholder="请选择标签">
+                  {tagsArr.map((item) => (
                     <Select.Option key={item.key} value={item.key}>
                       {item.value}
                     </Select.Option>
@@ -400,11 +462,11 @@ function Articles() {
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item label="文章状态">
-                <Select placeholder="请选择文章状态" defaultValue="">
+              <Form.Item field="status" label="文章状态">
+                <Select placeholder="请选择文章状态">
                   {[
                     {
-                      key: '',
+                      key: '0',
                       value: '全部',
                     },
                     ...statusOptions,
@@ -419,11 +481,11 @@ function Articles() {
           </Row>
           <Row>
             <Col span={6}>
-              <Form.Item label="发布状态">
+              <Form.Item field="publishStatus" label="发布状态">
                 <Select placeholder="请选择文章发布状态" defaultValue="">
                   {[
                     {
-                      key: '',
+                      key: '0',
                       value: '全部',
                     },
                     ...publishStatusOptions,
@@ -436,21 +498,19 @@ function Articles() {
               </Form.Item>
             </Col>
             <Col span={6}>
-              {' '}
-              <Form.Item label="创建时间">
+              <Form.Item field="createTime" label="创建时间">
                 <DatePicker.RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
               </Form.Item>
             </Col>
             <Col span={6}>
-              {' '}
-              <Form.Item label="修改时间">
+              <Form.Item field="updateTime" label="修改时间">
                 <DatePicker.RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
               </Form.Item>
             </Col>
             <Col span={5} offset={1}>
               <Form.Item>
-                <Button>重置</Button>
-                <Button style={{ marginLeft: 20 }} type="primary">
+                <Button onClick={onReset}>重置</Button>
+                <Button onClick={onSearch} style={{ marginLeft: 20 }} type="primary">
                   搜索
                 </Button>
               </Form.Item>
@@ -466,7 +526,7 @@ function Articles() {
           columns={columns}
           data={data}
         />
-
+        {/* 
         <Modal
           title={<div style={{ textAlign: 'left' }}> {title} </div>}
           visible={visible}
@@ -533,7 +593,7 @@ function Articles() {
               <UploadImage />
             </Form.Item>
           </Form>
-        </Modal>
+        </Modal> */}
       </Card>
     </div>
   );
