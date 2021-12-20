@@ -1,5 +1,17 @@
 import React from 'react';
-import { IconGift, IconStorage,IconTags, IconHeart, IconUser, IconMessage, IconSettings, IconHome, IconHeartFill, IconNav, IconBook } from '@arco-design/web-react/icon';
+import {
+  IconGift,
+  IconStorage,
+  IconTags,
+  IconHeart,
+  IconUser,
+  IconMessage,
+  IconSettings,
+  IconHome,
+  IconHeartFill,
+  IconNav,
+  IconBook,
+} from '@arco-design/web-react/icon';
 
 export const defaultRoute = 'welcome';
 
@@ -22,11 +34,19 @@ export const routes = [
   //     },
   //   ],
   // },
+  
   {
     name: '文章管理',
     key: 'articles',
     icon: <IconBook />,
     componentPath: 'articles',
+  },
+  {
+    name: '文章管理',
+    key: 'articles/edit',
+    icon: <IconBook />,
+    componentPath: 'articles/edit',
+    hide: true,
   },
   {
     name: 'menu.categories',
@@ -63,7 +83,7 @@ export const routes = [
     name: '网页配置',
     key: 'site',
     icon: <IconSettings />,
-    children:[
+    children: [
       {
         name: '首页配置',
         key: 'home',
@@ -81,7 +101,7 @@ export const routes = [
         key: 'right',
         icon: <IconNav />,
         componentPath: 'site/right',
-      }
-    ]
+      },
+    ],
   },
 ];

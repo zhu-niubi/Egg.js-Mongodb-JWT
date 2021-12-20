@@ -18,6 +18,7 @@ import {
   Radio,
 } from '@arco-design/web-react';
 import { useSelector, useDispatch } from 'react-redux';
+import history from '../../history';
 
 import {
   TOGGLE_VISIBLE,
@@ -298,12 +299,7 @@ function Articles() {
   };
 
   const onAdd = () => {
-    dispatch({
-      type: TOGGLE_VISIBLE,
-      payload: {
-        visible: true,
-      },
-    });
+    history.push(`/articles/edit`)
   };
 
   const onUpdate = (row) => {
