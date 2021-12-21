@@ -14,13 +14,15 @@ import {
 import styles from './style/index.module.less';
 import Save from '../../components/Save';
 import UploadImage from '../../components/UploadImage';
-import { queryAbout, addAbout, updateAbout } from '../../api/about';
+import { queryArticles, create, update } from '../../api/articles';
 import { getList as getCategoriesList } from '../../api/categories';
 import { getList as getTagsList } from '../../api/tags';
 import Editor from 'for-editor';
 const Row = Grid.Row;
 const Col = Grid.Col;
 import { upload } from '../../api/common';
+import history from '../../history';
+import { useLocation } from 'react-router-dom';
 const layout = {
   labelCol: {
     span: 2,
@@ -41,10 +43,10 @@ const formItemLayout = {
 
 const formItemLayout2 = {
   labelCol: {
-    span: 8,
+    span: 10,
   },
   wrapperCol: {
-    span: 16,
+    span: 14,
   },
 };
 
@@ -54,14 +56,27 @@ const Edit = () => {
   const [categoriesArr, setCategoriesArr] = useState([]);
   const [tagsArr, setTagsArr] = useState([]);
   const editorRef = useRef<any>();
+  const { search } = useLocation();
+  let id = '';
+  if (search) {
+    id = search.split('id=')[1];
+  }
 
   const loadData = async (isRefresh?: boolean) => {
-    const res: any = await queryAbout();
+    if (!id) return;
+    const res: any = await queryArticles({ id });
     if (isRefresh) {
       Message.success('刷新成功');
     }
     const data = res.data;
+
     if (!data) return;
+    console.log('data', data);
+    data.cover = [
+      {
+        imgUrl: data.cover,
+      },
+    ];
     form.setFieldsValue(data);
     setTime(data.updateTime);
   };
@@ -105,26 +120,26 @@ const Edit = () => {
     loadData(true);
   };
 
-  const onSave = async () => {
+  const onSave = async (publishStatus) => {
     await form.validate();
     const values = await form.getFields();
-
-    values.imgs = values.imgs?.map((item) => {
-      return {
-        _id: item._id,
-        imgUrl: item.imgUrl,
-        link: item.link,
-      };
-    });
-    console.log('values', values);
-    const func = values._id ? updateAbout : addAbout;
+    values.cover = values.cover[0].imgUrl;
+    values.publishStatus = publishStatus;
+    if (id) {
+      values.id = id;
+    }
+    let func = id ? update : create;
     const res: any = await func(values);
     if (res.data) {
-      loadData();
+      history.goBack();
       Message.success(res.msg);
     } else {
       Message.error('修改失败，请重试');
     }
+  };
+
+  const onPublish = async () => {
+    onSave(1);
   };
 
   const addImg = async (file) => {
@@ -132,12 +147,12 @@ const Edit = () => {
     formData.append('file', file);
     // const res = await upload(formData);
     const res = [
-			{
-				"hash": "FgOETQ8j4Zpygl6WWpZQ_75N20Sf",
-				"key": "3a4e66a577cde9b8e8c5550dc51aaaba.png",
-				"url": "http://img.nevergiveupt.top/3a4e66a577cde9b8e8c5550dc51aaaba.png"
-			}
-		];
+      {
+        hash: 'FgOETQ8j4Zpygl6WWpZQ_75N20Sf',
+        key: '3a4e66a577cde9b8e8c5550dc51aaaba.png',
+        url: 'http://img.nevergiveupt.top/3a4e66a577cde9b8e8c5550dc51aaaba.png',
+      },
+    ];
     if (res) {
       editorRef.current.$img2Url(file.name, res[0].url);
     }
@@ -145,7 +160,7 @@ const Edit = () => {
 
   return (
     <>
-      <Save time={time} onRefresh={onRefresh} onSave={onSave} />
+      <Save showBack time={time} onRefresh={id && onRefresh} onSave={() => onSave(2)} onPublish={onPublish} />
 
       <div className={styles.container}>
         <Breadcrumb style={{ marginBottom: 20 }}>
@@ -163,6 +178,7 @@ const Edit = () => {
               views: 1,
               like: 1,
               collect: 0,
+              comment: 0,
             }}
           >
             <Form.Item
@@ -210,7 +226,7 @@ const Edit = () => {
                 >
                   <Select placeholder="请给文章选个分类">
                     {categoriesArr.map((item) => (
-                      <Select.Option key={item.key} value={item.key}>
+                      <Select.Option key={item.key} value={item.value}>
                         {item.value}
                       </Select.Option>
                     ))}
@@ -225,7 +241,7 @@ const Edit = () => {
                 >
                   <Select mode="multiple" placeholder="请给文章贴个标签">
                     {tagsArr.map((item) => (
-                      <Select.Option key={item.key} value={item.key}>
+                      <Select.Option key={item.key} value={item.value}>
                         {item.value}
                       </Select.Option>
                     ))}
@@ -269,13 +285,28 @@ const Edit = () => {
                     </Form.Item>
                   </Col>
                   <Col span={8}>
-                    <Form.Item {...formItemLayout2} label="查看数量" field="views">
+                    <Form.Item
+                      {...formItemLayout2}
+                      label="查看数量"
+                      field="views"
+                      rules={[{ required: true, message: '请输入查看数量' }]}
+                    >
                       <InputNumber />
                     </Form.Item>
-                    <Form.Item {...formItemLayout2} label="点赞数量" field="like">
+                    <Form.Item
+                      {...formItemLayout2}
+                      label="点赞数量"
+                      field="like"
+                      rules={[{ required: true, message: '请输入点赞数量' }]}
+                    >
                       <InputNumber />
                     </Form.Item>
-                    <Form.Item {...formItemLayout2} label="收藏数量" field="collect">
+                    <Form.Item
+                      {...formItemLayout2}
+                      label="收藏数量"
+                      field="collect"
+                      rules={[{ required: true, message: '请输入收藏数量' }]}
+                    >
                       <InputNumber />
                     </Form.Item>
                   </Col>

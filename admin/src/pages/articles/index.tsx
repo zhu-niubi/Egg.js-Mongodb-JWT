@@ -303,19 +303,8 @@ function Articles() {
   };
 
   const onUpdate = (row) => {
-    dispatch({
-      type: TOGGLE_VISIBLE,
-      payload: {
-        visible: true,
-      },
-    });
-    row.imgs = [
-      {
-        imgUrl: row.cover,
-        link: row.link,
-      },
-    ];
-    form.setFieldsValue(row);
+    history.push(`/articles/edit?id=${row._id}`)
+   
   };
 
   const onDelete = async (row) => {

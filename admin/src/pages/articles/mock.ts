@@ -67,6 +67,18 @@ const data = {
 
 setupMock({
   setup() {
+    Mock.mock(new RegExp('/api/v1/articles/edit'), (params) => {
+      switch (params.type) {
+        case 'GET':
+          const { id } = qs.parseUrl(params.url).query;
+          const detailData = data.list.filter(item => item._id === id);
+          return {
+            "msg": "文章详情获取成功",
+            "data": detailData[0],
+            "code": 0
+          }
+      }
+    });
     Mock.mock(new RegExp('/api/v1/articles/collectStatus'), (params) => {
       switch (params.type) {
         case 'PUT':
@@ -131,13 +143,17 @@ setupMock({
           }
         case 'PUT':
           const body = JSON.parse(params.body);
+          const index = data.list.findIndex(item => item._id === body.id);
+          data.list[index] = { ...data.list[index], ...body };
           return {
             "msg": "文章修改成功",
             "data": body,
             "code": 0
           }
+         
         case 'POST':
           const postBody = JSON.parse(params.body);
+          data.list.unshift(postBody);
           return {
             "msg": "文章添加成功",
             "code": 0,
