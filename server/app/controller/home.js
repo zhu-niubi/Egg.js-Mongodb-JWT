@@ -4,7 +4,8 @@ const Controller = require('egg').Controller;
 
 class HomeController extends Controller {
   async index() {
-    const { ctx } = this;
+    const { ctx,app,config } = this;
+    console.log('config------',config.news);
     ctx.body = 'hello world';
   }
 }
