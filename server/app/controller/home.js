@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-const Controller = require('egg').Controller;
+const Controller = require("egg").Controller;
 
 class HomeController extends Controller {
   async index() {
-    const { ctx,app,config } = this;
-    console.log('config------',config.news);
-    ctx.body = 'hello world';
+    const { ctx, app, config } = this;
+    ctx.body = "hello world";
+    console.log("config.env------", config.env);
   }
 }
 
