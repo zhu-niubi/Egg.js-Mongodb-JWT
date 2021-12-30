@@ -3,22 +3,21 @@
 const Controller = require("egg").Controller;
 
 class PostsController extends Controller {
-  constructor(ctx){
+  constructor(ctx) {
     super(ctx);
     this.createRule = {
       username: {
-        type: 'email',
+        type: "email",
       },
       password: {
-        type: 'password',
-        compare: 're-password',
+        type: "password",
+        compare: "re-password",
       },
     };
   }
   async index() {
     const { ctx } = this;
-    console.log('api');
-    ctx.body = ctx.query.name;
+    ctx.body = ctx.queries.name;
   }
 
   async show() {
@@ -33,6 +32,14 @@ class PostsController extends Controller {
     ctx.body = ctx.request.body;
   }
 
+  async file() {
+    const { ctx } = this;
+    const files = ctx.request.files;
+    for (const file of files) {
+      console.log("----", file);
+    }
+   
+  }
 
   // new = async () => {};
 

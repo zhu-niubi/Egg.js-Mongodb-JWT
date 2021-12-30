@@ -27,6 +27,7 @@ module.exports = (appInfo) => {
     },
   };
 
+  // 模板
   config.view = {
     defaultViewEngine: "nunjucks",
     mapping: {
@@ -34,10 +35,22 @@ module.exports = (appInfo) => {
     },
   };
 
+  // csrf安全
   config.security = {
     csrf: {
       enable: false,
     },
+  };
+
+  // 文件
+  config.multipart = {
+    mode: "file",
+    fileExtensions: [".md"], // 增加对 md 扩展名的文件支持
+  };
+
+  config.session = {
+    key: "BLOG_EGG_SESSION_KEY",
+    encrypt: false,
   };
 
   return {
