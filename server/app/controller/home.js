@@ -7,6 +7,7 @@ class HomeController extends Controller {
     const { ctx, app, config } = this;
     ctx.body = "hello world";
     console.log("config.env------", config.env);
+    await app.runSchedule('console');
   }
   async add() {
     const ctx = this.ctx;
