@@ -3,6 +3,8 @@ module.exports = app => {
     // websocket
 
     console.log('server')
+    app.log('123-----');
+    console.log(app.bar);
   });
   app.on('error', (err, ctx) => {
     // report error
