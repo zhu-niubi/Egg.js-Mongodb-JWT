@@ -5,11 +5,11 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  router.get('/:id', controller.home.index);
-  router.get('/news', controller.news.list);
-  router.post('/file', controller.posts.file);
-  router.resources('posts', '/api/posts', controller.posts);
-  router.get('/add/cookies', controller.home.add);
+
+  router.get('/admin/list', controller.admin.list);
+  router.post('/admin/login', controller.admin.adminLogin);
+  router.delete('/admin/remove/:id', controller.admin.remove);
+
 
 };
 

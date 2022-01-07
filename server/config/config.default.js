@@ -53,6 +53,12 @@ module.exports = (appInfo) => {
     encrypt: false,
   };
 
+
+  config.mongoose = {
+    url: 'mongodb://127.0.0.1/blog',
+    options: {},
+  };
+
   return {
     ...config,
     ...userConfig,
