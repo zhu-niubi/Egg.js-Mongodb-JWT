@@ -1,7 +1,7 @@
 /* eslint valid-jsdoc: "off" */
 
 "use strict";
-
+const userConfig = require('./config.user');
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
@@ -18,14 +18,7 @@ module.exports = (appInfo) => {
   // add your middleware config here
   config.middleware = [];
 
-  // add your user config here
-  const userConfig = {
-    // myAppName: 'egg',
-    news: {
-      limit: 5,
-      serverUrl: "https://cnodejs.org/api/v1/topics",
-    },
-  };
+
 
   // 模板
   config.view = {
@@ -57,6 +50,10 @@ module.exports = (appInfo) => {
   config.mongoose = {
     url: 'mongodb://127.0.0.1/blog',
     options: {},
+  };
+
+  config.jwt = {
+    secret: userConfig.userName
   };
 
   return {
