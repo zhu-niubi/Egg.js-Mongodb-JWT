@@ -18,9 +18,16 @@ exports.site = (config, env) => {
 
   config.resolve.modules = ['node_modules'];
 
-  config.plugins.push(new ArcoDesignWebpackPlugin({
-    modifyVars: {
-      ...(themeColor ? { 'arcoblue-6': themeColor } : {})
-    }
-  }));
+  config.plugins.push(
+    new ArcoDesignWebpackPlugin({
+      modifyVars: {
+        ...(themeColor ? { 'arcoblue-6': themeColor } : {}),
+      },
+    })
+  );
+  config.devServer = {
+    proxy: {
+      '/api/v1': 'http://127.0.0.1:7001',
+    },
+  };
 };

@@ -22,12 +22,6 @@ class AdminController extends Controller {
     };
   }
 
-  async list() {
-    const { ctx, service } = this;
-    const res = await service.admin.list();
-    ctx.body = res;
-  }
-
   async adminLogin() {
     const { ctx, service } = this;
     const data = ctx.request.body;
@@ -39,11 +33,13 @@ class AdminController extends Controller {
     });
   }
 
-  async remove() {
+  async adminLogout() {
     const { ctx, service } = this;
-    const { id } = ctx.params;
-    const res = await service.admin.remove(id);
-    ctx.body = res;
+    const res = await service.admin.adminLogout();
+    ctx.helper.success({
+      ctx,
+      res,
+    });
   }
 }
 

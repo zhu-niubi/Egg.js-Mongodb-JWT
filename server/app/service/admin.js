@@ -46,10 +46,15 @@ class AdminService extends Service {
       msg: "登录成功",
     };
   }
-  async remove(id) {
+  async adminLogout() {
     const { ctx } = this;
-    const res = await ctx.model.Admin.deleteOne({ _id: id });
-    return res;
+    ctx.cookies.set("token", "", {
+      maxAge: 0,
+    });
+
+    return {
+      msg: "退出登录成功",
+    };
   }
 }
 

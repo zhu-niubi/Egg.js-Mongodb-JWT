@@ -6,9 +6,9 @@
 module.exports = (app) => {
   const { router, controller } = app;
   const baseRouter = app.config.baseRouter; // /api/v1
-  // router.get('/admin/list', controller.admin.list);
   router.post(baseRouter + "/admin/login", controller.admin.adminLogin);
-  // router.delete('/admin/remove/:id', controller.admin.remove);
+  router.post(baseRouter + "/admin/logout", controller.admin.adminLogout);
+
 };
 
 // model -> router -> controller -> service -> model
