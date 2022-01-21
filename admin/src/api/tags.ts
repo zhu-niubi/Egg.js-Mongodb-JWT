@@ -31,7 +31,7 @@ export async function remove(data) {
 }
 export async function updateStatus(data) {
     return request({
-        url: '/tags/status',
+        url: `/tags/status`,
         method: 'put',
         data,
     });

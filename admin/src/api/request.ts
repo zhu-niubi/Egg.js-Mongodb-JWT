@@ -10,17 +10,18 @@ export const request = (config) => {
   http.interceptors.request.use(
     (config) => {
       if (config.method === 'put' || config.method === 'delete') {
-        config.url += config.data._id || config.data.id;
+        const id = config.data._id || config.data.id;
+        config.url = config.url + `/${id}`;
       }
-      console.log('cofing', config);
       return config;
     },
-    () => { }
+    () => {}
   );
 
   // 响应拦截
   http.interceptors.response.use(
     (res) => {
+      console.log('res-------', res);
       return res.data ? res.data : res;
     },
     (error) => {

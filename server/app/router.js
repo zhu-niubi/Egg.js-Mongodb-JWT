@@ -9,6 +9,8 @@ module.exports = (app) => {
   router.post(baseRouter + "/admin/login", controller.admin.adminLogin);
   router.post(baseRouter + "/admin/logout", controller.admin.adminLogout);
 
+  router.resources("tags", baseRouter + "/tags", controller.tags); // 标签
+  router.put(baseRouter + "/tags/status/:id", controller.tags.updateStatus);
 };
 
 // model -> router -> controller -> service -> model

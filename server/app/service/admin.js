@@ -1,11 +1,7 @@
 const Service = require("egg").Service;
 
 class AdminService extends Service {
-  async list() {
-    const { ctx } = this;
-    const res = await ctx.model.Admin.find();
-    return res;
-  }
+
   async adminLogin(params) {
     const { ctx, app } = this;
 
@@ -53,7 +49,7 @@ class AdminService extends Service {
     });
 
     return {
-      msg: "退出登录成功",
+      msg: "退出成功",
     };
   }
 }
