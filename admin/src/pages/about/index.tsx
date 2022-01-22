@@ -51,7 +51,7 @@ const About = () => {
 
     values.imgs = values.imgs?.map(item => {
       return {
-        _id: item._id,
+        // _id: item._id,
         imgUrl: item.imgUrl,
         link: item.link
       }
