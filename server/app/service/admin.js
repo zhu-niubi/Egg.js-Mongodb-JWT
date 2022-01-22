@@ -26,7 +26,7 @@ class AdminService extends Service {
     }
 
     const token = app.jwt.sign({ ...oldUser }, app.config.jwt.secret, {
-      expiresIn: "1h",
+      expiresIn: 10,
     });
 
     ctx.cookies.set("token", token, {

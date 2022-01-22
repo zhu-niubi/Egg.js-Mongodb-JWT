@@ -38,6 +38,11 @@ export const request = (config) => {
           location.href = '/#/admin/login';
           Notification.error({ title: '权限错误', content: response.data.msg})
         }
+        if(response.status === 401){
+          // location.href = '/401';
+          location.href = '/#/admin/login';
+          Notification.error({ title: 'Token错误', content: 'token过期，请重新登录'})
+        }
       }
     }
   );

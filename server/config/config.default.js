@@ -1,7 +1,7 @@
 /* eslint valid-jsdoc: "off" */
 
 "use strict";
-const userConfig = require('./config.user');
+const userConfig = require("./config.user");
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
@@ -16,9 +16,7 @@ module.exports = (appInfo) => {
   config.keys = appInfo.name + "_1640431712552_1460";
 
   // add your middleware config here
-  config.middleware = ['auth'];
-
-
+  config.middleware = ["errorHandler", "auth"];
 
   // 模板
   config.view = {
@@ -46,19 +44,18 @@ module.exports = (appInfo) => {
     encrypt: false,
   };
 
-
   config.mongoose = {
-    url: 'mongodb://127.0.0.1/blog',
+    url: "mongodb://127.0.0.1/blog",
     options: {},
   };
 
   config.jwt = {
-    secret: userConfig.userName
+    secret: userConfig.userName,
   };
 
   config.auth = {
-    whiteList:[userConfig.userName]
-  }
+    whiteList: [userConfig.userName],
+  };
 
   return {
     ...config,
