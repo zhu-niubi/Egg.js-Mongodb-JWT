@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { Notification } from '@arco-design/web-react';
 export const request = (config) => {
   const http = axios.create({
     baseURL: '/api/v1',
@@ -13,6 +13,11 @@ export const request = (config) => {
         const id = config.data._id || config.data.id;
         config.url = config.url + `/${id}`;
       }
+      console.log('config', config);
+      const token = localStorage.getItem('token');
+      config.headers = {
+        Authorization: 'Bearer ' + token,
+      };
       return config;
     },
     () => {}
@@ -26,6 +31,14 @@ export const request = (config) => {
     },
     (error) => {
       console.log('error===', error.response); // 注意这里必须打印error.response
+      const response = error.response;
+      if(response && response.status){
+        if(response.status === 403){
+          // location.href = '/403';
+          location.href = '/#/admin/login';
+          Notification.error({ title: '权限错误', content: response.data.msg})
+        }
+      }
     }
   );
 

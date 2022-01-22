@@ -16,7 +16,7 @@ module.exports = (appInfo) => {
   config.keys = appInfo.name + "_1640431712552_1460";
 
   // add your middleware config here
-  config.middleware = [];
+  config.middleware = ['auth'];
 
 
 
@@ -55,6 +55,10 @@ module.exports = (appInfo) => {
   config.jwt = {
     secret: userConfig.userName
   };
+
+  config.auth = {
+    whiteList:[userConfig.userName]
+  }
 
   return {
     ...config,
