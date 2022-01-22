@@ -26,6 +26,7 @@ import { ReducerState } from '../../redux';
 import styles from './style/index.module.less';
 import { getList, create, update, remove, updateStatus } from '../../api/tags';
 import { EditableCell, EditableRow } from './edit';
+import dayjs from 'dayjs';
 
 const FormItem = Form.Item;
 
@@ -71,10 +72,20 @@ function Tags() {
     {
       title: '创建时间',
       dataIndex: 'createTime',
+      render: (_, record) => {
+        return record.createTime
+          ? dayjs(record.createTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+          : '-';
+      },
     },
     {
       title: '修改时间',
       dataIndex: 'updateTime',
+      render: (_, record) => {
+        return record.updateTime
+          ? dayjs(record.updateTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+          : '-';
+      },
     },
 
     {
