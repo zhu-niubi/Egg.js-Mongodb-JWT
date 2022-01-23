@@ -24,6 +24,7 @@ module.exports = (app) => {
     controller.tags.updateStatus
   );
   router.resources("about", baseRouter + "/about", jwt, controller.about); // 关于
+  router.resources("user", baseRouter + "/user", jwt, controller.user); // 用户管理
 };
 
 // model -> router -> controller -> service -> model
