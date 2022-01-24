@@ -32,6 +32,12 @@ module.exports = (app) => {
     controller.config.home
   ); // 网页配置-首页配置
   router.resources("hf", baseRouter + "/config/hf", jwt, controller.config.hf); // 网页配置-Header/Footer配置
+  router.resources(
+    "right_introduction",
+    baseRouter + "/config/right/introduction",
+    jwt,
+    controller.config.right.introduction
+  ); // 网页配置-侧栏配置-个人简介
 };
 
 // model -> router -> controller -> service -> model
