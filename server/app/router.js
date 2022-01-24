@@ -38,6 +38,13 @@ module.exports = (app) => {
     jwt,
     controller.config.right.introduction
   ); // 网页配置-侧栏配置-个人简介
+
+  router.resources(
+    "right_ad",
+    baseRouter + "/config/right/ad",
+    jwt,
+    controller.config.right.ad
+  ); // 网页配置-侧栏配置-广告设置
 };
 
 // model -> router -> controller -> service -> model
