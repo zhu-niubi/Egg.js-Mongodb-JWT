@@ -25,6 +25,7 @@ module.exports = (app) => {
   );
   router.resources("about", baseRouter + "/about", jwt, controller.about); // 关于
   router.resources("user", baseRouter + "/user", jwt, controller.user); // 用户管理
+  router.resources("home", baseRouter + "/config/home", jwt, controller.config.home); // 网页配置-首页配置
 };
 
 // model -> router -> controller -> service -> model
