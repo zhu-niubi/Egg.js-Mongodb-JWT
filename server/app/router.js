@@ -45,6 +45,13 @@ module.exports = (app) => {
     jwt,
     controller.config.right.ad
   ); // 网页配置-侧栏配置-广告设置
+
+  router.resources(
+    "right_recommend",
+    baseRouter + "/config/right/recommend",
+    jwt,
+    controller.config.right.recommend
+  ); // 网页配置-侧栏配置-推荐设置
 };
 
 // model -> router -> controller -> service -> model
