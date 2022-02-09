@@ -232,9 +232,6 @@ function Tab3() {
     });
 
     form.resetFields();
-    form.setFieldsValue({
-      imgs: null,
-    });
   };
   const onOk = async () => {
     await form.validate();

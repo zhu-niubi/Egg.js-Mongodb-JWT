@@ -11,6 +11,29 @@ module.exports = (app) => {
   router.post(baseRouter + "/admin/logout", controller.admin.adminLogout);
 
   router.resources(
+    "articles",
+    baseRouter + "/articles",
+    jwt,
+    controller.articles
+  ); // 文章
+  router.put(
+    baseRouter + "/articles/status/:id",
+    jwt,
+    controller.articles.changeStatus
+  ); // 启用，停用
+  router.put(
+    baseRouter + "/articles/publishStatus/:id",
+    jwt,
+    controller.articles.changePublishStatus
+  ); // 修改发布状态
+
+  router.post(
+    baseRouter + "/articles/collectStatus",
+    jwt,
+    controller.articles.changeCollectStatus
+  ); // 一键开启或关闭收藏
+
+  router.resources(
     "categories",
     baseRouter + "/categories",
     jwt,

@@ -57,4 +57,41 @@ module.exports = {
     }
     return pam;
   },
+
+  getTimeQueryCon(params) {
+    let timeQuery = {};
+
+    //     createStartTime		否	number	10位时间戳  2022-1-26 2022-1-27
+    // createEndTime		否	number	10位时间戳   2022-1-27
+    // updateStartTime		否	number	10位时间戳
+    // updateEndTime
+
+    if (params.createStartTime) {
+      timeQuery.createTime = { $gte: params.createStartTime };
+    }
+    if (params.createEndTime) {
+      timeQuery.createTime = { $lte: params.createEndTime };
+    }
+    if (params.createStartTime && params.createEndTime) {
+      timeQuery.createTime = {
+        $gte: params.createStartTime,
+        $lte: params.createEndTime,
+      };
+    }
+
+    if (params.updateStartTime) {
+      timeQuery.updateTime = { $gte: params.updateStartTime };
+    }
+    if (params.updateEndTime) {
+      timeQuery.updateTime = { $lte: params.updateEndTime };
+    }
+    if (params.updateStartTime && params.updateEndTime) {
+      timeQuery.updateTime = {
+        $gte: params.updateStartTime,
+        $lte: params.updateEndTime,
+      };
+    }
+
+    return timeQuery;
+  },
 };

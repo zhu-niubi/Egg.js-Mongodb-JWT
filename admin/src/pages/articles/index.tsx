@@ -29,7 +29,13 @@ import {
 } from './redux/actionTypes';
 import { ReducerState } from '../../redux';
 import styles from './style/index.module.less';
-import { getList, remove, updateStatus, updatePublishStatus, updateCollectStatus } from '../../api/articles';
+import {
+  getList,
+  remove,
+  updateStatus,
+  updatePublishStatus,
+  updateCollectStatus,
+} from '../../api/articles';
 import { publishStatusOptions, statusOptions } from '../../const';
 import dayjs from 'dayjs';
 import { getList as getTagsList } from '../../api/tags';
@@ -49,7 +55,7 @@ function Articles() {
       page: 1,
       pageSize: 9999,
     });
-    const list = res.list?.map((item) => {
+    const list = res.data.list?.map((item) => {
       item.key = item._id;
       item.value = item.name;
       return item;
@@ -62,7 +68,7 @@ function Articles() {
       page: 1,
       pageSize: 9999,
     });
-    const list = res.list?.map((item) => {
+    const list = res.data.list?.map((item) => {
       item.key = item._id;
       item.value = item.name;
       return item;
@@ -91,7 +97,9 @@ function Articles() {
   };
 
   // 查看
-  const onView = (record) => {};
+  const onView = (record) => {
+    history.push('/articles/edit?id=' + record._id);
+  };
 
   // 文章状态修改
   const onStatusChange = async (checked, record) => {
@@ -255,10 +263,10 @@ function Articles() {
       const res: any = await getList(postData);
       console.log(res);
       if (res) {
-        dispatch({ type: UPDATE_LIST, payload: { data: res.list } });
+        dispatch({ type: UPDATE_LIST, payload: { data: res.data.list } });
         dispatch({
           type: UPDATE_PAGINATION,
-          payload: { pagination: { ...pagination, current, pageSize, total: res.totalCount } },
+          payload: { pagination: { ...pagination, current, pageSize, total: res.data.totalCount } },
         });
         dispatch({ type: UPDATE_LOADING, payload: { loading: false } });
         dispatch({ type: UPDATE_FORM_PARAMS, payload: { params } });
@@ -299,12 +307,11 @@ function Articles() {
   };
 
   const onAdd = () => {
-    history.push(`/articles/edit`)
+    history.push(`/articles/edit`);
   };
 
   const onUpdate = (row) => {
-    history.push(`/articles/edit?id=${row._id}`)
-   
+    history.push(`/articles/edit?id=${row._id}`);
   };
 
   const onDelete = async (row) => {
@@ -321,7 +328,7 @@ function Articles() {
 
   const handleUpdateCollectStatus = async (isCollect) => {
     const res: any = await updateCollectStatus({
-      isCollect
+      isCollect,
     });
     if (res.code === 0) {
       Message.success(res.msg);
@@ -329,7 +336,7 @@ function Articles() {
     } else {
       Message.error('一键操作失败，请重试！');
     }
-  }
+  };
 
   const layout = {
     labelCol: {
@@ -352,7 +359,12 @@ function Articles() {
               添加文章
             </Button>
 
-            <Radio.Group onChange={handleUpdateCollectStatus} type="button" name="lang" style={{ marginLeft: 20 }}>
+            <Radio.Group
+              onChange={handleUpdateCollectStatus}
+              type="button"
+              name="lang"
+              style={{ marginLeft: 20 }}
+            >
               <Radio value={true}>一键开启收藏</Radio>
               <Radio value={false}>一键关闭收藏</Radio>
             </Radio.Group>
@@ -386,7 +398,7 @@ function Articles() {
                     },
                     ...categoriesArr,
                   ].map((item) => (
-                    <Select.Option key={item.key} value={item.key}>
+                    <Select.Option key={item.key} value={item.value}>
                       {item.value}
                     </Select.Option>
                   ))}
@@ -397,7 +409,7 @@ function Articles() {
               <Form.Item field="tags" label="标签">
                 <Select mode="multiple" placeholder="请选择标签">
                   {tagsArr.map((item) => (
-                    <Select.Option key={item.key} value={item.key}>
+                    <Select.Option key={item.key} value={item.value}>
                       {item.value}
                     </Select.Option>
                   ))}

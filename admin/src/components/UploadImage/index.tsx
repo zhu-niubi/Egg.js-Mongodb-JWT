@@ -36,7 +36,6 @@ const UploadImage = (props) => {
   });
 
   useEffect(() => {
-    console.log('useEffect-value', value);
     if (!value) {
       setImgsArr(initImgs);
     } else {
