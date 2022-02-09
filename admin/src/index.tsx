@@ -6,7 +6,7 @@ import zhCN from '@arco-design/web-react/es/locale/zh-CN';
 import enUS from '@arco-design/web-react/es/locale/en-US';
 import ReactDOM from 'react-dom';
 import { Router, Switch, Route } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
 import rootReducer from './redux';
 import history from './history';
 import PageLayout from './layout/page-layout';
@@ -44,14 +44,14 @@ function Index() {
     }
   }
 
-  function fetchUserInfo() {
-    axios.get('/api/user/userInfo').then((res) => {
-      store.dispatch({
-        type: 'update-userInfo',
-        payload: { userInfo: res.data },
-      });
-    });
-  }
+  // function fetchUserInfo() {
+  //   axios.get('/api/user/userInfo').then((res) => {
+  //     store.dispatch({
+  //       type: 'update-userInfo',
+  //       payload: { userInfo: res.data },
+  //     });
+  //   });
+  // }
 
   useEffect(() => {
     fetchLocale();
@@ -59,7 +59,7 @@ function Index() {
 
   useEffect(() => {
     if (checkLogin()) {
-      fetchUserInfo();
+      // fetchUserInfo();
     } else {
       history.push('/admin/login');
     }

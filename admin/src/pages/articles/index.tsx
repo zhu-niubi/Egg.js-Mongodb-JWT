@@ -21,7 +21,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import history from '../../history';
 
 import {
-  TOGGLE_VISIBLE,
   UPDATE_FORM_PARAMS,
   UPDATE_LIST,
   UPDATE_LOADING,

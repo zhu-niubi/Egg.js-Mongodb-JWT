@@ -11,12 +11,11 @@ import {
   Badge,
   Modal,
   Form,
-  Radio
+  Radio,
 } from '@arco-design/web-react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
-
   UPDATE_FORM_PARAMS,
   UPDATE_LIST,
   UPDATE_LOADING,
@@ -28,8 +27,6 @@ import styles from './style/index.module.less';
 import { getList, remove, updateCommentStatus } from '../../api/comment';
 import { auditStatusOptions } from '../../const';
 import dayjs from 'dayjs';
-
-
 
 function Categories() {
   const locale = useLocale();
@@ -46,14 +43,14 @@ function Categories() {
   const handleAudit = (record) => {
     setVisible(true);
     setId(record._id);
-  }
+  };
 
   const columns: any = [
     {
       title: '文章标题',
       dataIndex: 'articleTitle',
       fixed: 'left',
-      width: 160
+      width: 160,
     },
     {
       title: '昵称',
@@ -77,29 +74,29 @@ function Categories() {
       title: '审核状态',
       dataIndex: 'auditStatus',
       render: (text) => {
-        const current = auditStatusOptions.filter(item => item.value === +text);
+        const current = auditStatusOptions.filter((item) => item.value === +text);
         const obj = current[0];
         const enums = {
           1: 'success',
           2: 'error',
-          3: 'warning'
-        }
-        return <Badge status={enums[obj.value]} text={obj.label} />
-      }
+          3: 'warning',
+        };
+        return <Badge status={enums[obj.value]} text={obj.label} />;
+      },
     },
     {
       title: '评论时间',
       dataIndex: 'commentTime',
       render: (text) => {
         return dayjs(text * 1000).format('YYYY-MM-DD HH:mm:ss');
-      }
+      },
     },
     {
       title: '审核时间',
       dataIndex: 'auditTime',
       render: (text) => {
         return dayjs(text * 1000).format('YYYY-MM-DD HH:mm:ss');
-      }
+      },
     },
 
     {
@@ -109,10 +106,7 @@ function Categories() {
       width: 200,
       render: (_, record) => (
         <div className={styles.operations}>
-          <Popconfirm
-            title='Are you sure you want to delete?'
-            onOk={() => onDelete(record)}
-          >
+          <Popconfirm title="Are you sure you want to delete?" onOk={() => onDelete(record)}>
             <Button type="text" status="danger" size="small">
               {locale['searchTable.columns.operations.delete']}
             </Button>
@@ -121,7 +115,6 @@ function Categories() {
           <Button onClick={() => handleAudit(record)} type="text" status="success" size="small">
             审核
           </Button>
-
         </div>
       ),
     },
@@ -130,8 +123,6 @@ function Categories() {
   const commentState = useSelector((state: ReducerState) => state.comment);
 
   const { data, pagination, loading, formParams } = commentState;
-
-
 
   useEffect(() => {
     fetchData(1, pagination.pageSize, query);
@@ -149,18 +140,15 @@ function Categories() {
       const res: any = await getList(postData);
       console.log(res);
       if (res) {
-        dispatch({ type: UPDATE_LIST, payload: { data: res.list } });
+        dispatch({ type: UPDATE_LIST, payload: { data: res.data.list } });
         dispatch({
           type: UPDATE_PAGINATION,
-          payload: { pagination: { ...pagination, current, pageSize, total: res.totalCount } },
+          payload: { pagination: { ...pagination, current, pageSize, total: res.data.totalCount } },
         });
         dispatch({ type: UPDATE_LOADING, payload: { loading: false } });
         dispatch({ type: UPDATE_FORM_PARAMS, payload: { params } });
       }
-    } catch (error) {
-
-    }
-
+    } catch (error) {}
   }
 
   function onChangeTable(pagination) {
@@ -171,21 +159,16 @@ function Categories() {
   function onSearch(articleTitle) {
     setQuery({
       ...query,
-      articleTitle
+      articleTitle,
     });
   }
 
   function onSelectSearch(auditStatus) {
     setQuery({
       ...query,
-      auditStatus
+      auditStatus,
     });
   }
-
-
-
-
-
 
   const onDelete = async (row) => {
     const res: any = await remove(row);
@@ -195,15 +178,14 @@ function Categories() {
     } else {
       Message.error('删除失败，请重试！');
     }
-
-  }
+  };
 
   const onCancel = () => {
     setVisible(false);
     form.resetFields();
     setId('');
     setConfirmLoading(false);
-  }
+  };
 
   const onOk = async () => {
     await form.validate();
@@ -212,10 +194,9 @@ function Categories() {
     console.log(values);
     const postData = {
       id,
-      ...values
-    }
+      ...values,
+    };
     console.log('postData', postData);
-
 
     const res: any = await updateCommentStatus(postData);
     if (res.code === 0) {
@@ -225,9 +206,7 @@ function Categories() {
     } else {
       Message.error('审核失败，请重试！');
     }
-  }
-
-
+  };
 
   return (
     <div className={styles.container}>
@@ -236,17 +215,16 @@ function Categories() {
       </Breadcrumb>
       <Card bordered={false}>
         <div className={styles.toolbar}>
-
           <div>
             <Input.Search
               style={{ width: 300 }}
               searchButton
-              placeholder='请输入文章标题'
+              placeholder="请输入文章标题"
               onSearch={onSearch}
             />
             <Select
               defaultValue={0}
-              placeholder='请选择审核状态'
+              placeholder="请选择审核状态"
               style={{ width: 160, marginLeft: 20, marginRight: 20 }}
               onChange={onSelectSearch}
             >
@@ -256,7 +234,9 @@ function Categories() {
                 </Select.Option>
               ))}
             </Select>
-            <Button type="primary" onClick={() => handleAudit({ _id: 0 })}>一键审核</Button>
+            <Button type="primary" onClick={() => handleAudit({ _id: 0 })}>
+              一键审核
+            </Button>
           </div>
         </div>
         <Table
@@ -267,30 +247,28 @@ function Categories() {
           columns={columns}
           data={data}
           scroll={{ x: 1600 }}
-
         />
 
-
         <Modal
-          title='审核'
+          title="审核"
           visible={visible}
           onOk={onOk}
           confirmLoading={confirmLoading}
           onCancel={onCancel}
         >
-          <Form
-            form={form}
-          >
-            <Form.Item label='审核状态' field='auditStatus' rules={[{ required: true, message: '请选择审核状态' }]}>
+          <Form form={form}>
+            <Form.Item
+              label="审核状态"
+              field="auditStatus"
+              rules={[{ required: true, message: '请选择审核状态' }]}
+            >
               <Radio.Group>
                 <Radio value={1}>通过</Radio>
                 <Radio value={2}>驳回</Radio>
               </Radio.Group>
             </Form.Item>
-
           </Form>
         </Modal>
-
       </Card>
     </div>
   );

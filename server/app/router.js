@@ -48,6 +48,7 @@ module.exports = (app) => {
   );
   router.resources("about", baseRouter + "/about", jwt, controller.about); // 关于
   router.resources("user", baseRouter + "/user", jwt, controller.user); // 用户管理
+  router.resources("comment", baseRouter + "/comment", jwt, controller.comment); // 评论管理
   router.resources(
     "home",
     baseRouter + "/config/home",
