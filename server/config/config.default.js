@@ -34,10 +34,10 @@ module.exports = (appInfo) => {
   };
 
   // 文件
-  config.multipart = {
-    mode: "file",
-    fileExtensions: [".md"], // 增加对 md 扩展名的文件支持
-  };
+  // config.multipart = {
+  //   mode: "file",
+  //   fileExtensions: [".md"], // 增加对 md 扩展名的文件支持
+  // };
 
   config.session = {
     key: "BLOG_EGG_SESSION_KEY",

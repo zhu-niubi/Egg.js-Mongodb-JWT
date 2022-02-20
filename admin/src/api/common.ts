@@ -5,5 +5,6 @@ export async function upload(data) {
     url: '/upload',
     method: 'POST',
     data,
+    headers: { 'Content-Type': 'multipart/form-data' },
   });
 }

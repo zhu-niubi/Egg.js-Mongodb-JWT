@@ -17,6 +17,7 @@ export const request = (config) => {
       const token = localStorage.getItem('token');
       config.headers = {
         Authorization: 'Bearer ' + token,
+        ...config.headers,
       };
       return config;
     },
@@ -32,16 +33,16 @@ export const request = (config) => {
     (error) => {
       console.log('error===', error.response); // 注意这里必须打印error.response
       const response = error.response;
-      if(response && response.status){
-        if(response.status === 403){
+      if (response && response.status) {
+        if (response.status === 403) {
           // location.href = '/403';
           location.href = '/#/admin/login';
-          Notification.error({ title: '权限错误', content: response.data.msg})
+          Notification.error({ title: '权限错误', content: response.data.msg });
         }
-        if(response.status === 401){
+        if (response.status === 401) {
           // location.href = '/401';
           location.href = '/#/admin/login';
-          Notification.error({ title: 'Token错误', content: 'token过期，请重新登录'})
+          Notification.error({ title: 'Token错误', content: 'token过期，请重新登录' });
         }
       }
     }

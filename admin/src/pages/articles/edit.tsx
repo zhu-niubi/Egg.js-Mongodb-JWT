@@ -145,14 +145,14 @@ const Edit = () => {
   const addImg = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    // const res = await upload(formData);
-    const res = [
-      {
-        hash: 'FgOETQ8j4Zpygl6WWpZQ_75N20Sf',
-        key: '3a4e66a577cde9b8e8c5550dc51aaaba.png',
-        url: 'http://img.nevergiveupt.top/3a4e66a577cde9b8e8c5550dc51aaaba.png',
-      },
-    ];
+    const res = await upload(formData);
+    // const res = [
+    //   {
+    //     hash: 'FgOETQ8j4Zpygl6WWpZQ_75N20Sf',
+    //     key: '3a4e66a577cde9b8e8c5550dc51aaaba.png',
+    //     url: 'http://img.nevergiveupt.top/3a4e66a577cde9b8e8c5550dc51aaaba.png',
+    //   },
+    // ];
     if (res) {
       editorRef.current.$img2Url(file.name, res[0].url);
     }
