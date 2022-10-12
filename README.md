@@ -1,7 +1,7 @@
 # class
 
 #### 介绍
-class
+class【Egg.js+Mongodb+JWT】个人博客后台服务开发
 
 #### 软件架构
 软件架构说明
